@@ -64,9 +64,9 @@ export async function fetchCBRates() {
 export async function fetchCOT() {
   const res = await fetch('/api/cot');
   if (!res.ok) throw new Error(`COT proxy HTTP ${res.status}`);
-  const { cot } = await res.json();
+  const { cot, asOf } = await res.json();
   if (!cot || Object.keys(cot).length === 0) throw new Error('No COT data');
-  return { cot };
+  return { cot, cotAsOf: asOf || null };
 }
 
 // ── Economic Calendar — /api/calendar proxy (ForexFactory) ─────────

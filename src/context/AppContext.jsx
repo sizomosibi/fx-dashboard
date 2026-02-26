@@ -11,6 +11,7 @@ const initialLiveData = {
   fx:        {},   // { 'EUR/USD':1.0842, ... }
   usMacro:   {},   // { cpi, corePCE, unemployment, nfp } — reserved for future
   cot:       {},   // { EUR:{net,prev}, JPY:{net,prev}, ... }
+  cotAsOf:   null,
   intlMacro: {},   // { AUD:{cpi,unemployment}, ... } — reserved for future
   calendar:  {},   // { AUD:[...events], USD:[...events], ... }
   news:      {},   // { AUD:[...articles], ... }
@@ -72,6 +73,7 @@ function reducer(state, action) {
       if (patch.fx)        next.fx        = { ...next.fx,        ...patch.fx };
       if (patch.usMacro)   next.usMacro   = { ...next.usMacro,   ...patch.usMacro };
       if (patch.cot)       next.cot       = { ...next.cot,       ...patch.cot };
+      if (patch.cotAsOf)   next.cotAsOf   = patch.cotAsOf;
       if (patch.intlMacro) next.intlMacro = { ...next.intlMacro, ...patch.intlMacro };
       if (patch.calendar)  next.calendar  = { ...next.calendar,  ...patch.calendar };
       if (patch.news)      next.news      = { ...next.news,      ...patch.news };
