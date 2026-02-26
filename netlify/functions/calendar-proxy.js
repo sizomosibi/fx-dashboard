@@ -19,6 +19,15 @@ const HEADERS = {
   'Cache-Control':                'public, max-age=1800',
 };
 
+// Safe fetch timeout — AbortSignal.timeout() not available on all Node runtimes.
+function timedFetch(url, opts = {}, ms = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...opts, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
+
 function normaliseImpact(str) {
   const s = (str || '').toLowerCase();
   if (s.includes('high'))   return 'high';
@@ -79,14 +88,13 @@ async function fetchFFWeek(which) {
   let lastErr;
   for (const url of urls) {
     try {
-      const res = await fetch(url, {
+      const res = await timedFetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; FXDashboard/2.0)',
           'Accept':     'application/json, */*',
           'Referer':    'https://www.forexfactory.com/',
         },
-        signal: AbortSignal.timeout(10000),
-      });
+      }, 10000);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (!Array.isArray(data)) throw new Error('Not an array');

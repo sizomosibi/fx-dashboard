@@ -15,6 +15,15 @@ const HEADERS = {
   'Cache-Control':                'public, max-age=1800', // 30-min cache
 };
 
+// Safe fetch timeout — AbortSignal.timeout() not available on all Node runtimes.
+function timedFetch(url, opts = {}, ms = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...opts, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
+
 // Treasury XML field → our key mapping
 const FIELD_MAP = {
   BC_1MONTH:  'm1',
@@ -61,10 +70,9 @@ function extractDate(xml) {
 
 async function fetchMonth(date) {
   const url = buildUrl(date);
-  const res  = await fetch(url, {
+  const res  = await timedFetch(url, {
     headers: { 'Accept': 'application/xml, text/xml, */*' },
-    signal:  AbortSignal.timeout(10000),
-  });
+  }, 10000);
   if (!res.ok) throw new Error(`Treasury HTTP ${res.status}`);
   return res.text();
 }

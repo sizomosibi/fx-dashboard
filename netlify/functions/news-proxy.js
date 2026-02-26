@@ -17,6 +17,15 @@ const HEADERS = {
   'Cache-Control':                'public, max-age=300', // 5-min cache
 };
 
+// Safe fetch timeout — AbortSignal.timeout() not available on all Node runtimes.
+function timedFetch(url, opts = {}, ms = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...opts, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
+
 // RSS feed sources — all free, no key required
 const RSS_FEEDS = [
   {
@@ -105,13 +114,12 @@ function parseRSS(xml, sourceName) {
 }
 
 async function fetchFeed(feed) {
-  const res = await fetch(feed.url, {
+  const res = await timedFetch(feed.url, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (compatible; FXDashboard/1.0)',
       'Accept':     'application/rss+xml, application/xml, text/xml, */*',
     },
-    signal: AbortSignal.timeout(8000),
-  });
+  }, 8000);
   if (!res.ok) throw new Error(`${feed.source} HTTP ${res.status}`);
   const xml = await res.text();
   return parseRSS(xml, feed.source);

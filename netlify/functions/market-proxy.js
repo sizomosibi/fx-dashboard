@@ -23,6 +23,15 @@ const HEADERS = {
   'Cache-Control':                'public, max-age=60', // 1-min cache
 };
 
+// Safe fetch timeout — AbortSignal.timeout() not available on all Node runtimes.
+function timedFetch(url, opts = {}, ms = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...opts, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
+
 const SYMBOLS = [
   { sym: 'GC=F',      key: 'xau',    divisor: 1 },       // Gold $/oz
   { sym: 'CL=F',      key: 'wti',    divisor: 1 },       // WTI $/bbl
@@ -35,13 +44,12 @@ const SYMBOLS = [
 
 async function fetchYahooQuote(symbol) {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=2d`;
-  const res  = await fetch(url, {
+  const res  = await timedFetch(url, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       'Accept':     'application/json',
     },
-    signal: AbortSignal.timeout(8000),
-  });
+  }, 8000);
   if (!res.ok) throw new Error(`Yahoo ${symbol} HTTP ${res.status}`);
   const json = await res.json();
 
