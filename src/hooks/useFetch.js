@@ -1,15 +1,18 @@
 import { useCallback } from 'react';
 import { useDispatch } from '../context/AppContext.jsx';
-import { Keys } from '../api/keys.js';
 import {
-  fetchFX, fetchTreasury, fetchECB, fetchBoC, fetchSNB,
-  fetchFRED, fetchTwelveData, fetchCOT, fetchTriad,
+  fetchFX, fetchYields, fetchMarkets,
+  fetchECB, fetchBoC, fetchSNB,
+  fetchCOT, fetchCalendar, fetchNews,
 } from '../api/sources.js';
 
+// ── useFetch ───────────────────────────────────────────────────────
+// All sources are zero-key — they call Netlify proxy functions
+// or free public APIs directly. No API keys required anywhere.
 export function useFetch() {
   const dispatch = useDispatch();
 
-  const applyPatch = useCallback((patch, statusKey, statusValue) => {
+  const apply = useCallback((patch, statusKey, statusValue) => {
     dispatch({
       type: 'PATCH_LIVE',
       payload: { ...patch, status: { [statusKey]: statusValue } },
@@ -19,61 +22,49 @@ export function useFetch() {
   const fetchAll = useCallback(async () => {
     dispatch({ type: 'SET_FETCH_PHASE', payload: 'loading' });
 
-    // ── Zero-key sources — always run ─────────────────────────────
-    const zeroKey = [
+    const sources = [
+      // ── Direct free APIs (CORS-safe) ──────────────────────────
       fetchFX()
-        .then(p  => applyPatch(p, 'fx', 'live'))
-        .catch(e => console.warn('[Frankfurter]', e.message)),
-
-      fetchTreasury()
-        .then(p  => applyPatch(p, 'yields', 'live-partial'))
-        .catch(e => console.warn('[Treasury]', e.message)),
+        .then(p => apply(p, 'fx', 'live'))
+        .catch(e => console.warn('[FX Frankfurter]', e.message)),
 
       fetchECB()
-        .then(p  => applyPatch(p, 'cbRates', 'live-partial'))
+        .then(p => apply(p, 'cbRates', 'live-partial'))
         .catch(e => console.warn('[ECB]', e.message)),
 
       fetchBoC()
-        .then(p  => applyPatch(p, 'cbRates', 'live-partial'))
+        .then(p => apply(p, 'cbRates', 'live-partial'))
         .catch(e => console.warn('[BoC]', e.message)),
 
       fetchSNB()
-        .then(p  => applyPatch(p, 'cbRates', 'live-partial'))
+        .then(p => apply(p, 'cbRates', 'live-partial'))
         .catch(e => console.warn('[SNB]', e.message)),
 
-      // ── CFTC COT — free, no key, weekly ───────────────────────
       fetchCOT()
-        .then(p  => applyPatch(p, 'cot', 'live'))
+        .then(p => apply(p, 'cot', 'live'))
         .catch(e => console.warn('[CFTC COT]', e.message)),
+
+      // ── Netlify proxy functions (server-side, no CORS/key) ────
+      fetchYields()
+        .then(p => apply(p, 'yields', 'live'))
+        .catch(e => console.warn('[Yields proxy]', e.message)),
+
+      fetchMarkets()
+        .then(p => apply(p, 'markets', 'live'))
+        .catch(e => console.warn('[Markets proxy]', e.message)),
+
+      fetchCalendar()
+        .then(p => apply(p, 'calendar', 'live'))
+        .catch(e => console.warn('[Calendar proxy]', e.message)),
+
+      fetchNews()
+        .then(p => apply(p, 'news', 'live'))
+        .catch(e => console.warn('[News proxy]', e.message)),
     ];
 
-    // ── Keyed sources — only if key is configured ─────────────────
-    const keyed = [];
-
-    if (Keys.fred) {
-      keyed.push(
-        fetchFRED(Keys.fred)
-          .then(p  => applyPatch(p, 'yields', 'live'))
-          .catch(e => console.warn('[FRED]', e.message)),
-
-        // International triad — same FRED key, separate call
-        fetchTriad(Keys.fred)
-          .then(p  => applyPatch(p, 'triad', 'live'))
-          .catch(e => console.warn('[FRED Intl]', e.message)),
-      );
-    }
-
-    if (Keys.td) {
-      keyed.push(
-        fetchTwelveData(Keys.td)
-          .then(p  => applyPatch(p, 'markets', 'live'))
-          .catch(e => console.warn('[TwelveData]', e.message)),
-      );
-    }
-
-    await Promise.allSettled([...zeroKey, ...keyed]);
+    await Promise.allSettled(sources);
     dispatch({ type: 'SET_FETCH_PHASE', payload: 'done' });
-  }, [applyPatch, dispatch]);
+  }, [apply, dispatch]);
 
   return { fetchAll };
 }

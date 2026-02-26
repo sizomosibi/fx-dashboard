@@ -15,6 +15,7 @@ import { S8Trades }        from './components/sections/S8Trades.jsx';
 import { S9AI }            from './components/sections/S9AI.jsx';
 import { S10Exec }         from './components/sections/S10Exec.jsx';
 import { S11Update }       from './components/sections/S11Update.jsx';
+import { S12News }         from './components/sections/S12News.jsx';
 import { GoldBrief }       from './components/sections/GoldBrief.jsx';
 import { useCurrentCcy }   from './context/AppContext.jsx';
 import { useCurrencyData } from './hooks/useCurrencyData.js';
@@ -36,6 +37,7 @@ function FXBrief({ d, mkt }) {
       <S9AI       d={d} mkt={mkt} />
       <S10Exec />
       <S11Update />
+      <S12News />
     </>
   );
 }

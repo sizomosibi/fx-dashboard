@@ -84,12 +84,15 @@ export function S1Macro({ mkt }) {
     { label: '2s10s YIELD CURVE', obj: yields.spread2s10s, signal: yields.spread2s10s.signal === 'norm' ? 'risk-on' : 'risk-off', sigLabel: (yields.spread2s10s.direction || 'Normal').toUpperCase(), note: yields.spread2s10s.note },
   ];
 
-  const ycTenors = [
-    { t: '2Y',  v: parseFloat(yields.US2Y.v) },
-    { t: '5Y',  v: parseFloat(yields.US5Y.v) },
-    { t: '10Y', v: parseFloat(yields.US10Y.v) },
-    { t: '30Y', v: parseFloat(yields.US30Y.v) },
-  ];
+  // Use full Treasury curve if available from proxy, else fall back to 4-point snapshot
+  const ycTenors = yields.curve?.length
+    ? yields.curve.map(c => ({ t: c.tenor, v: c.val }))
+    : [
+        { t: '2Y',  v: parseFloat(yields.US2Y.v) },
+        { t: '5Y',  v: parseFloat(yields.US5Y.v) },
+        { t: '10Y', v: parseFloat(yields.US10Y.v) },
+        { t: '30Y', v: parseFloat(yields.US30Y.v) },
+      ];
   const ycMax = Math.max(...ycTenors.map(x => x.v));
 
   const stColor = s => s === 'unwinding' ? 'var(--red)' : s === 'at risk' ? 'var(--gold)' : 'var(--teal)';

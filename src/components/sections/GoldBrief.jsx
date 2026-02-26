@@ -33,7 +33,7 @@ export function GoldBrief({ d, mkt }) {
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#555', letterSpacing: '0.15em', marginBottom: '0.2rem' }}>
-              GLOBAL SAFE-HAVEN ASSET · XAU/USD <Dot src={liveData.markets.xau ? 'live' : 'stale'} />
+              GLOBAL SAFE-HAVEN ASSET · XAU/USD <Dot src={liveData.markets?.xau?.price ? 'live' : 'stale'} />
             </div>
             <div className="gold-price-big">{d.spotPrice}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.2rem', flexWrap: 'wrap' }}>
@@ -62,12 +62,17 @@ export function GoldBrief({ d, mkt }) {
         </div>
 
         <div className="gold-drivers">
-          {d.drivers?.map((dr, i) => (
+          {[
+            { label:'REAL RATE (10Y − CPI)', value:yields.realRate10Y.v,  delta:yields.realRate10Y.chg, dir:yields.realRate10Y.dir, src:yields.realRate10Y.src, note:d.drivers?.[0]?.note||'Falling real rates = gold bullish.' },
+            { label:'DXY (USD INDEX)',        value:dxy.v,                 delta:dxy.chg,                dir:dxy.dir,               src:dxy.src,               note:d.drivers?.[1]?.note||'Inverse relationship with gold.' },
+            { label:'FED FUNDS RATE',         value:liveData.cbRates?.USD||d.drivers?.[2]?.value||'4.25–4.50%', delta:d.drivers?.[2]?.delta||'0.00%', dir:d.drivers?.[2]?.dir||'flat', src:liveData.cbRates?.USD?'manual':'stale', note:d.drivers?.[2]?.note||'Fed on hold.' },
+            { label:'VIX (VOLATILITY)',       value:vix.v,                 delta:vix.chg,                dir:vix.dir,               src:vix.src,               note:d.drivers?.[3]?.note||'Elevated VIX = safe-haven demand.' },
+          ].map((dr, i) => (
             <div key={i} className="gold-driver-box">
-              <div className="gd-label">{dr.label}</div>
+              <div className="gd-label">{dr.label} <Dot src={dr.src||'stale'} /></div>
               <div className="gd-value">{dr.value}</div>
-              <div className={`gd-delta ${dr.dir === 'up' ? 'bull' : dr.dir === 'down' ? 'bear' : 'flat'}`}>{dr.delta}</div>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: '#555', marginTop: '0.3rem', lineHeight: 1.5 }}>{dr.note}</div>
+              <div className={`gd-delta ${dr.dir==='up'?'bull':dr.dir==='down'?'bear':'flat'}`}>{dr.delta}</div>
+              <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:'0.65rem',color:'#555',marginTop:'0.3rem',lineHeight:1.5}}>{dr.note}</div>
             </div>
           ))}
         </div>
