@@ -6,28 +6,26 @@ import { CURRENCIES } from '../../data/currencies.js';
 
 // CBs that auto-fetch via free APIs (no key)
 const CB_LIST = [
-  { c: 'USD', flag: '🇺🇸', name: 'Federal Reserve',   hint: 'Manual — enter after each FOMC meeting', auto: false },
-  { c: 'EUR', flag: '🇪🇺', name: 'ECB',               hint: 'Auto-fetched (ECB Data API, no key)',    auto: true  },
-  { c: 'GBP', flag: '🇬🇧', name: 'Bank of England',   hint: 'Manual — enter after each MPC meeting', auto: false },
-  { c: 'JPY', flag: '🇯🇵', name: 'Bank of Japan',     hint: 'Manual — enter after each MPM meeting', auto: false },
-  { c: 'CHF', flag: '🇨🇭', name: 'SNB',               hint: 'Auto-fetched (SNB Data API, no key)',   auto: true  },
-  { c: 'CAD', flag: '🇨🇦', name: 'Bank of Canada',    hint: 'Auto-fetched (BoC Valet API, no key)',  auto: true  },
-  { c: 'AUD', flag: '🇦🇺', name: 'RBA',               hint: 'Manual — enter after each RBA meeting', auto: false },
-  { c: 'NZD', flag: '🇳🇿', name: 'RBNZ',              hint: 'Manual — enter after each MPC meeting', auto: false },
+  { c: 'USD', flag: '🇺🇸', name: 'Federal Reserve',   hint: 'Manual — enter after each FOMC meeting',                          auto: false },
+  { c: 'EUR', flag: '🇪🇺', name: 'ECB',               hint: 'Auto via Netlify env var RATE_EUR — update in dashboard per meeting', auto: true  },
+  { c: 'GBP', flag: '🇬🇧', name: 'Bank of England',   hint: 'Manual — enter after each MPC meeting',                           auto: false },
+  { c: 'JPY', flag: '🇯🇵', name: 'Bank of Japan',     hint: 'Manual — enter after each MPM meeting',                           auto: false },
+  { c: 'CHF', flag: '🇨🇭', name: 'SNB',               hint: 'Auto via Netlify env var RATE_CHF — update in dashboard per meeting', auto: true  },
+  { c: 'CAD', flag: '🇨🇦', name: 'Bank of Canada',    hint: 'Auto via Netlify env var RATE_CAD — update in dashboard per meeting', auto: true  },
+  { c: 'AUD', flag: '🇦🇺', name: 'RBA',               hint: 'Manual — enter after each RBA meeting',                           auto: false },
+  { c: 'NZD', flag: '🇳🇿', name: 'RBNZ',              hint: 'Manual — enter after each MPC meeting',                           auto: false },
 ];
 
 const AUTO_SOURCES = [
-  { src: 'Frankfurter.app',    covers: 'All G10 FX spot rates',         update: 'Daily 16:00 CET' },
-  { src: 'US Treasury XML',    covers: 'Full yield curve (2Y→30Y)',      update: 'Daily EOD' },
-  { src: 'Yahoo Finance',      covers: 'Gold, Oil, S&P, VIX, DXY, Copper', update: 'Real-time (1-min delay)' },
-  { src: 'ECB Data API',       covers: 'ECB deposit facility rate',      update: 'Per meeting' },
-  { src: 'Bank of Canada API', covers: 'BoC overnight rate',             update: 'Per meeting' },
-  { src: 'SNB Data API',       covers: 'SNB sight deposit rate',         update: 'Quarterly' },
-  { src: 'CFTC Socrata API',   covers: 'COT speculative positioning',    update: 'Weekly Fri 3:30pm ET' },
-  { src: 'ForexFactory JSON',  covers: 'Economic calendar (this & next week)', update: 'Daily' },
-  { src: 'FXStreet RSS',       covers: 'Forex headlines',                update: 'Live' },
-  { src: 'ForexLive RSS',      covers: 'Forex headlines',                update: 'Live' },
-  { src: 'DailyFX RSS',        covers: 'Forex headlines',                update: 'Live' },
+  { src: 'Frankfurter.app',       covers: 'All G10 FX spot rates',              update: 'Daily 16:00 CET' },
+  { src: 'US Treasury XML',       covers: 'Full yield curve (2Y→30Y)',           update: 'Daily EOD' },
+  { src: 'Yahoo Finance',         covers: 'Gold, Oil, S&P, VIX, DXY, Copper',   update: 'Real-time (1-min delay)' },
+  { src: 'Netlify env vars',      covers: 'ECB, BoC, SNB rates',                 update: 'Manual per CB meeting' },
+  { src: 'CFTC via GitHub Actions', covers: 'COT speculative positioning (9 contracts)', update: 'Weekly Fri auto-commit' },
+  { src: 'ForexFactory JSON',     covers: 'Economic calendar (this & next week)', update: 'Daily' },
+  { src: 'FXStreet RSS',          covers: 'Forex headlines',                     update: 'Live' },
+  { src: 'ForexLive RSS',         covers: 'Forex headlines',                     update: 'Live' },
+  { src: 'DailyFX RSS',           covers: 'Forex headlines',                     update: 'Live' },
 ];
 
 export function SettingsModal() {

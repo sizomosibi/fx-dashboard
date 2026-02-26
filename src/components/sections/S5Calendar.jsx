@@ -4,8 +4,6 @@ import { Dot } from '../ui/Dot.jsx';
 import { useLiveData, useCurrentCcy } from '../../context/AppContext.jsx';
 import { useCalendarEnrich } from '../../hooks/useCalendarEnrich.js';
 
-const IMP_COLOR = { high: 'var(--red)', medium: 'var(--gold)', low: 'var(--muted)' };
-
 function ImpactPill({ impact }) {
   return (
     <span className={`cal-imp-pill ${impact}`}>

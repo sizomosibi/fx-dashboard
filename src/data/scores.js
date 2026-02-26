@@ -1,6 +1,11 @@
 // ── scores.js ─────────────────────────────────────────
 
-export const COT_AS_OF = 'Feb 18, 2026';
+// COT data: CFTC Commitments of Traders (Legacy Futures Only report)
+// Update workflow: paste weekly CFTC report into Section 11 > COT Report mode.
+// Update COT_AS_OF below whenever you update the COT numbers.
+export const COT_AS_OF = 'Feb 18, 2026'; // update this when you update COT data
+
+
 
 export const COPPER_ANALYSIS = {
   current: '$4.31/lb',

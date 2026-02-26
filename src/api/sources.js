@@ -47,9 +47,10 @@ export async function fetchMarkets() {
   return { markets };
 }
 
-// ── CB Rates — /api/cb-rates proxy (ECB + BoC + SNB server-side) ───
-// These three APIs block browser requests via CORS. The proxy runs
-// server-side on Netlify Functions where CORS doesn't apply.
+// ── CB Rates — /api/cb-rates proxy (Netlify env vars) ─────────────
+// ECB, BoC, and SNB APIs block AWS Lambda IPs. Rates are stored as
+// Netlify environment variables (RATE_EUR, RATE_CAD, RATE_CHF) and
+// returned directly — zero external HTTP calls, zero failure modes.
 export async function fetchCBRates() {
   const res = await fetch('/api/cb-rates');
   if (!res.ok) throw new Error(`CB rates proxy HTTP ${res.status}`);
@@ -58,9 +59,10 @@ export async function fetchCBRates() {
   return { cbRates: rates };
 }
 
-// ── COT Positioning — /api/cot proxy (CFTC server-side) ────────────
-// publicreporting.cftc.gov blocks browser CORS on non-localhost.
-// The proxy fetches all 8 G10 contracts + Gold in parallel.
+// ── COT Positioning — /api/cot proxy (static file) ────────────────
+// cot-data.json is written by scripts/fetch_cot.py running in GitHub
+// Actions every Friday. The proxy reads the static file — no external
+// calls, no IP blocking. See .github/workflows/fetch-cot.yml.
 export async function fetchCOT() {
   const res = await fetch('/api/cot');
   if (!res.ok) throw new Error(`COT proxy HTTP ${res.status}`);

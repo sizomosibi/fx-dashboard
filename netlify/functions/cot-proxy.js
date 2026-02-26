@@ -26,8 +26,9 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Netlify Functions run from the repo root — public/ is at the same level
-    const filePath = path.join(__dirname, '..', '..', 'public', 'cot-data.json');
+    // process.cwd() is always the repo root in Netlify Functions.
+    // __dirname can point to a bundler temp dir with esbuild — cwd() is safe.
+    const filePath = path.join(process.cwd(), 'public', 'cot-data.json');
     const raw      = fs.readFileSync(filePath, 'utf8');
     const data     = JSON.parse(raw);
 

@@ -32,7 +32,7 @@ function FXBrief({ d, mkt }) {
       <S4External d={d} />
       <S5Calendar d={d} />
       <S6Geo      d={d} />
-      <S7Cot      d={d} />
+      <S7Cot />
       <S8Trades   d={d} />
       <S9AI       d={d} mkt={mkt} />
       <S10Exec />

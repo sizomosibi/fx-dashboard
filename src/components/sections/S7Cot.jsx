@@ -5,7 +5,7 @@ import { COT, COT_AS_OF } from '../../data/scores.js';
 import { CURRENCIES } from '../../data/currencies.js';
 import { useCurrentCcy, useLiveData } from '../../context/AppContext.jsx';
 
-// Merge live Nasdaq Data Link numbers over static baseline.
+// Merge live CFTC numbers (from cot-data.json via GitHub Actions) over static baseline.
 // Only net + prev are overridden — label and detail text stay static.
 function useMergedCOT() {
   const live = useLiveData();
@@ -20,7 +20,7 @@ function useMergedCOT() {
   );
 }
 
-export function S7Cot({ d }) {
+export function S7Cot() {
   const cur    = useCurrentCcy();
   const live   = useLiveData();
   const merged = useMergedCOT();
@@ -39,7 +39,7 @@ export function S7Cot({ d }) {
         <Dot src={cotSrc} />
         {isLive ? (
           <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--teal)' }}>
-            LIVE · Nasdaq Data Link (CFTC) · Week of {asOf}
+            LIVE · CFTC Socrata (GitHub Actions) · Week of {asOf}
           </span>
         ) : (
           <>
@@ -47,7 +47,7 @@ export function S7Cot({ d }) {
               BASELINE · Week of {asOf}
             </span>
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#555' }}>
-              — Add <code style={{ color: 'var(--ink)' }}>NASDAQ_DATA_LINK_KEY</code> in Netlify env vars to enable live data
+              — Trigger the <strong style={{ color: 'var(--ink)' }}>GitHub Actions</strong> workflow or run <code style={{ color: 'var(--ink)' }}>python scripts/fetch_cot.py</code> to update
             </span>
           </>
         )}
