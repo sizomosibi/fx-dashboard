@@ -4,33 +4,43 @@
   functions = "netlify/functions"
 
 [[redirects]]
-  from   = "/api/claude"
-  to     = "/.netlify/functions/claude-proxy"
+  from = "/api/claude"
+  to   = "/.netlify/functions/claude-proxy"
   status = 200
 
 [[redirects]]
-  from   = "/api/markets"
-  to     = "/.netlify/functions/market-proxy"
+  from = "/api/markets"
+  to   = "/.netlify/functions/market-proxy"
   status = 200
 
 [[redirects]]
-  from   = "/api/yields"
-  to     = "/.netlify/functions/yields-proxy"
+  from = "/api/yields"
+  to   = "/.netlify/functions/yields-proxy"
   status = 200
 
 [[redirects]]
-  from   = "/api/calendar"
-  to     = "/.netlify/functions/calendar-proxy"
+  from = "/api/cb-rates"
+  to   = "/.netlify/functions/cb-rates-proxy"
   status = 200
 
 [[redirects]]
-  from   = "/api/news"
-  to     = "/.netlify/functions/news-proxy"
+  from = "/api/cot"
+  to   = "/.netlify/functions/cot-proxy"
   status = 200
 
 [[redirects]]
-  from   = "/*"
-  to     = "/index.html"
+  from = "/api/calendar"
+  to   = "/.netlify/functions/calendar-proxy"
+  status = 200
+
+[[redirects]]
+  from = "/api/news"
+  to   = "/.netlify/functions/news-proxy"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
   status = 200
 
 [functions]

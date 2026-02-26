@@ -1,13 +1,13 @@
 /**
- * Netlify Function — ForexFactory Calendar Proxy
+ * Netlify Function — Economic Calendar Proxy
  *
- * Fetches the undocumented but stable ForexFactory JSON endpoint
- * (used by FF's own site). Runs server-side to avoid CORS.
- * Returns this week + next week, filtered to G10 only.
+ * Primary source: ForexFactory's undocumented but stable JSON endpoint
+ * (nfs.faireconomy.media) used by FF's own website for this/next week.
  *
- * GET /api/calendar?week=this   (default)
- * GET /api/calendar?week=next
- * GET /api/calendar?week=both   (returns combined array)
+ * Returns this week + next week of G10 economic events grouped by currency.
+ *
+ * GET /api/calendar
+ * Returns: { events: [...], byCurrency: { AUD:[...], ... }, fetchedAt }
  */
 
 const G10 = new Set(['AUD', 'USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'NZD']);
@@ -16,34 +16,29 @@ const HEADERS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Headers': 'Content-Type',
   'Content-Type':                 'application/json',
-  'Cache-Control':                'public, max-age=900', // 15-min cache
+  'Cache-Control':                'public, max-age=1800',
 };
 
-// Map FF impact strings → our lowercase tokens
 function normaliseImpact(str) {
   const s = (str || '').toLowerCase();
-  if (s === 'high')   return 'high';
-  if (s === 'medium') return 'medium';
-  if (s === 'low')    return 'low';
+  if (s.includes('high'))   return 'high';
+  if (s.includes('medium') || s.includes('moderate')) return 'medium';
   return 'low';
 }
 
-// Format ISO date string → "Mon Feb 24"
-function formatDate(isoStr) {
+function fmtDate(isoStr) {
   try {
-    const d = new Date(isoStr);
-    return d.toLocaleDateString('en-AU', {
+    return new Date(isoStr).toLocaleDateString('en-AU', {
       weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC',
     });
-  } catch { return isoStr; }
+  } catch { return isoStr || ''; }
 }
 
-// Format ISO date string → "11:30am" (UTC)
-function formatTime(isoStr) {
+function fmtTime(isoStr) {
   try {
-    const d = new Date(isoStr);
-    const h = d.getUTCHours();
-    const m = d.getUTCMinutes();
+    const d  = new Date(isoStr);
+    const h  = d.getUTCHours();
+    const m  = d.getUTCMinutes();
     if (h === 0 && m === 0) return 'All Day';
     const hh = h % 12 || 12;
     const mm = String(m).padStart(2, '0');
@@ -51,29 +46,54 @@ function formatTime(isoStr) {
   } catch { return ''; }
 }
 
-async function fetchWeek(which) {
-  const url = `https://nfs.faireconomy.media/ff_calendar_${which}week.json?timezone=UTC`;
-  const res  = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; FXDashboard/1.0)' },
-  });
-  if (!res.ok) throw new Error(`FF ${which}week HTTP ${res.status}`);
-  return res.json();
-}
-
 function transformEvents(rawEvents) {
-  return rawEvents
+  return (rawEvents || [])
     .filter(e => G10.has((e.country || '').toUpperCase()))
     .map(e => ({
-      currency:  (e.country || '').toUpperCase(),
-      date:      formatDate(e.date),
-      time:      formatTime(e.date),
-      isoDate:   e.date,
-      event:     e.title   || '',
-      impact:    normaliseImpact(e.impact),
-      forecast:  e.forecast || '—',
-      previous:  e.previous || '—',
-      actual:    e.actual   || null,   // null = not yet released
+      currency: (e.country || '').toUpperCase(),
+      date:     fmtDate(e.date),
+      time:     fmtTime(e.date),
+      isoDate:  e.date || null,
+      event:    (e.title || '').trim(),
+      impact:   normaliseImpact(e.impact),
+      forecast: e.forecast || '—',
+      previous: e.previous || '—',
+      actual:   e.actual   || null,
     }));
+}
+
+function groupByCurrency(events) {
+  const byCurrency = {};
+  for (const e of events) {
+    if (!byCurrency[e.currency]) byCurrency[e.currency] = [];
+    byCurrency[e.currency].push(e);
+  }
+  return byCurrency;
+}
+
+async function fetchFFWeek(which) {
+  const urls = [
+    `https://nfs.faireconomy.media/ff_calendar_${which}week.json?timezone=UTC`,
+    `https://nfs.faireconomy.media/ff_calendar_${which}week.json`,
+  ];
+  let lastErr;
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; FXDashboard/2.0)',
+          'Accept':     'application/json, */*',
+          'Referer':    'https://www.forexfactory.com/',
+        },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('Not an array');
+      return data;
+    } catch (e) { lastErr = e; }
+  }
+  throw new Error(`FF ${which}week: ${lastErr?.message}`);
 }
 
 exports.handler = async (event) => {
@@ -81,40 +101,41 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: HEADERS, body: '' };
   }
 
-  const week = event.queryStringParameters?.week || 'both';
+  const weeks   = ['this', 'next'];
+  const results = await Promise.allSettled(weeks.map(fetchFFWeek));
 
-  try {
-    let raw = [];
+  let allRaw = [];
+  const errors = [];
 
-    if (week === 'this' || week === 'both') {
-      const data = await fetchWeek('this');
-      raw = raw.concat(Array.isArray(data) ? data : []);
+  for (let i = 0; i < results.length; i++) {
+    if (results[i].status === 'fulfilled') {
+      allRaw = allRaw.concat(results[i].value);
+    } else {
+      errors.push(`${weeks[i]}week: ${results[i].reason?.message}`);
+      console.error('[Calendar Proxy]', errors[errors.length - 1]);
     }
-    if (week === 'next' || week === 'both') {
-      const data = await fetchWeek('next');
-      raw = raw.concat(Array.isArray(data) ? data : []);
-    }
+  }
 
-    const events = transformEvents(raw);
-
-    // Group by currency for easy lookup on the frontend
-    const byCurrency = {};
-    for (const e of events) {
-      if (!byCurrency[e.currency]) byCurrency[e.currency] = [];
-      byCurrency[e.currency].push(e);
-    }
-
-    return {
-      statusCode: 200,
-      headers:    HEADERS,
-      body:       JSON.stringify({ events, byCurrency, fetchedAt: new Date().toISOString() }),
-    };
-
-  } catch (err) {
+  if (allRaw.length === 0) {
     return {
       statusCode: 502,
-      headers:    HEADERS,
-      body:       JSON.stringify({ error: err.message }),
+      headers: HEADERS,
+      body: JSON.stringify({ error: 'ForexFactory calendar unavailable', errors }),
     };
   }
+
+  const events     = transformEvents(allRaw);
+  const byCurrency = groupByCurrency(events);
+
+  return {
+    statusCode: 200,
+    headers: HEADERS,
+    body: JSON.stringify({
+      events,
+      byCurrency,
+      total:     events.length,
+      errors:    errors.length ? errors : undefined,
+      fetchedAt: new Date().toISOString(),
+    }),
+  };
 };
