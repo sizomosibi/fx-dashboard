@@ -1,27 +1,17 @@
 /**
  * Netlify Function — CFTC COT Positioning Proxy
  *
- * Fetches Commitments of Traders data for G10 currency futures
- * from the CFTC Socrata public API, server-side.
- *
- * Browser calls to publicreporting.cftc.gov are blocked by CORS
- * on non-localhost domains. This proxy eliminates that.
- *
- * Data is the Legacy Futures Only report (non-commercial positions).
- * Updated every Friday at 3:30pm ET.
- *
+ * Fetches COT data server-side from the CFTC Socrata public API.
  * GET /api/cot
- * Returns: { cot: { EUR:{net,prev}, JPY:{net,prev}, ... }, asOf, fetchedAt }
  */
 
 const HEADERS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Headers': 'Content-Type',
   'Content-Type':                 'application/json',
-  'Cache-Control':                'public, max-age=3600', // 1-hour cache (weekly data)
+  'Cache-Control':                'public, max-age=3600',
 };
 
-// CFTC contract names → our currency keys
 const CONTRACTS = {
   'EURO FX - CHICAGO MERCANTILE EXCHANGE':               'EUR',
   'JAPANESE YEN - CHICAGO MERCANTILE EXCHANGE':          'JPY',
@@ -44,20 +34,20 @@ function calcNet(row) {
 
 async function fetchContract(marketName) {
   const encoded = encodeURIComponent(marketName);
-  const url = `https://publicreporting.cftc.gov/resource/gpe5-46if.json` +
+  // FIX: $order value must have space URL-encoded as %20 — Socrata rejects bare space
+  const url =
+    `https://publicreporting.cftc.gov/resource/gpe5-46if.json` +
     `?market_and_exchange_names=${encoded}` +
-    `&$order=as_of_date_in_form_yyyy_mm_dd DESC` +
+    `&$order=as_of_date_in_form_yyyy_mm_dd%20DESC` +  // ← was: unencoded space
     `&$limit=2` +
     `&$select=as_of_date_in_form_yyyy_mm_dd,open_interest_all,noncomm_positions_long_all,noncomm_positions_short_all`;
 
+  // FIX: 7s timeout — well under Netlify's 26s function limit
   const res = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'X-App-Token': '', // public endpoint — no token needed
-    },
-    signal: AbortSignal.timeout(12000),
+    headers: { 'Accept': 'application/json' },
+    signal:  AbortSignal.timeout(7000),
   });
-  if (!res.ok) throw new Error(`CFTC HTTP ${res.status} for ${marketName}`);
+  if (!res.ok) throw new Error(`CFTC HTTP ${res.status}`);
   return res.json();
 }
 
@@ -67,8 +57,6 @@ exports.handler = async (event) => {
   }
 
   const entries = Object.entries(CONTRACTS);
-
-  // Fetch all contracts in parallel
   const results = await Promise.allSettled(
     entries.map(([market]) => fetchContract(market))
   );
@@ -78,30 +66,20 @@ exports.handler = async (event) => {
   let   asOf   = null;
 
   results.forEach((result, i) => {
-    const [market, ccy] = entries[i];
+    const [, ccy] = entries[i];
     if (result.status !== 'fulfilled') {
       errors[ccy] = result.reason?.message || 'fetch failed';
-      console.error(`[COT Proxy ${ccy}]`, errors[ccy]);
+      console.error(`[COT ${ccy}]`, errors[ccy]);
       return;
     }
-
     const rows = result.value;
-    if (!rows?.length) {
-      errors[ccy] = 'empty response';
-      return;
-    }
+    if (!rows?.length) { errors[ccy] = 'empty'; return; }
 
     const net  = calcNet(rows[0]);
     const prev = rows[1] ? calcNet(rows[1]) : net;
-
-    if (net === null) {
-      errors[ccy] = 'calculation failed (zero open interest)';
-      return;
-    }
+    if (net === null) { errors[ccy] = 'zero OI'; return; }
 
     cot[ccy] = { net, prev: prev ?? net };
-
-    // Track report date from the most recent row
     if (!asOf && rows[0].as_of_date_in_form_yyyy_mm_dd) {
       asOf = rows[0].as_of_date_in_form_yyyy_mm_dd;
     }
@@ -118,6 +96,6 @@ exports.handler = async (event) => {
   return {
     statusCode: 200,
     headers: HEADERS,
-    body: JSON.stringify({ cot, asOf, errors, fetchedAt: new Date().toISOString() }),
+    body: JSON.stringify({ cot, asOf, errors: Object.keys(errors).length ? errors : undefined, fetchedAt: new Date().toISOString() }),
   };
 };

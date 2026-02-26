@@ -3,6 +3,31 @@
   publish   = "dist"
   functions = "netlify/functions"
 
+# ── Function settings ──────────────────────────────────────────────
+[functions]
+  node_bundler = "esbuild"
+
+# Per-function timeout overrides (max 26s on free tier)
+# COT fetches 9 CFTC contracts in parallel — needs extra time
+[functions."cot-proxy"]
+  timeout = 26
+
+[functions."market-proxy"]
+  timeout = 20
+
+[functions."yields-proxy"]
+  timeout = 20
+
+[functions."cb-rates-proxy"]
+  timeout = 20
+
+[functions."calendar-proxy"]
+  timeout = 20
+
+[functions."news-proxy"]
+  timeout = 26
+
+# ── URL rewrites ───────────────────────────────────────────────────
 [[redirects]]
   from = "/api/claude"
   to   = "/.netlify/functions/claude-proxy"
@@ -42,6 +67,3 @@
   from = "/*"
   to   = "/index.html"
   status = 200
-
-[functions]
-  node_bundler = "esbuild"
