@@ -1,0 +1,43 @@
+{
+  "cot": {
+    "EUR": {
+      "net": 19,
+      "prev": 19
+    },
+    "JPY": {
+      "net": 4,
+      "prev": -6
+    },
+    "GBP": {
+      "net": -18,
+      "prev": -11
+    },
+    "CHF": {
+      "net": -43,
+      "prev": -44
+    },
+    "CAD": {
+      "net": 12,
+      "prev": 6
+    },
+    "AUD": {
+      "net": 18,
+      "prev": 13
+    },
+    "NZD": {
+      "net": -48,
+      "prev": -49
+    },
+    "USD": {
+      "net": 1,
+      "prev": -3
+    },
+    "XAU": {
+      "net": 39,
+      "prev": 40
+    }
+  },
+  "asOf": "2026-02-17T00:00:00.000",
+  "fetchedAt": "2026-02-26T17:18:22.027022+00:00",
+  "source": "CFTC Socrata via GitHub Actions"
+}
