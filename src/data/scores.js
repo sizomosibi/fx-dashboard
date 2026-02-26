@@ -1,5 +1,7 @@
 // ── scores.js ─────────────────────────────────────────
 
+export const COT_AS_OF = 'Feb 18, 2026';
+
 export const COPPER_ANALYSIS = {
   current: '$4.31/lb',
   change: '-$0.08 (-1.8%)',
