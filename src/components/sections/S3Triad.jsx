@@ -32,8 +32,8 @@ export function S3Triad({ d }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem' }}>
         <Dot src={triadSrc} />
         {triadSrc === 'live'
-          ? <span style={{ color: 'var(--teal)' }}>CPI + Unemployment live via FRED</span>
-          : <span style={{ color: '#555' }}>Hardcoded baseline — add FRED key in ⚙ for live updates</span>
+          ? <span style={{ color: 'var(--teal)' }}>CPI + Unemployment updated via live data</span>
+          : <span style={{ color: '#555' }}>Hardcoded baseline — updates automatically via weekly §11 Update Assistant</span>
         }
       </div>
 

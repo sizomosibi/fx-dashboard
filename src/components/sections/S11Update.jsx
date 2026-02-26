@@ -207,7 +207,6 @@ export function S11Update() {
 
   // Build the full prompt with user input injected
   const buildFull = useCallback(() => {
-    const combined = `${promptDef.systemPrompt}\n\n---\n\n${promptDef.userPrompt.replace('{{INPUT}}', rawInput.trim() || '(no input provided)')}`;
     return { system: promptDef.systemPrompt, user: promptDef.userPrompt.replace('{{INPUT}}', rawInput.trim()) };
   }, [promptDef, rawInput]);
 

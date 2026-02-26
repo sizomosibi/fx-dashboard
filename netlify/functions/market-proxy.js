@@ -10,7 +10,7 @@
  *   ^GSPC  S&P 500
  *   ^VIX   CBOE Volatility Index
  *   DX-Y.NYB  US Dollar Index
- *   HG=F   Copper (USD/lb — Yahoo returns cents, we convert)
+ *   HG=F   Copper (USD/lb — Yahoo Finance returns in USD/lb directly, e.g. 4.62)
  *   SI=F   Silver
  *
  * GET /api/markets
@@ -29,7 +29,7 @@ const SYMBOLS = [
   { sym: '^GSPC',     key: 'spx',    divisor: 1 },       // S&P 500
   { sym: '^VIX',      key: 'vix',    divisor: 1 },       // VIX
   { sym: 'DX-Y.NYB',  key: 'dxy',    divisor: 1 },       // DXY
-  { sym: 'HG=F',      key: 'copper', divisor: 100 },     // Copper: Yahoo gives cents/lb → convert to $/lb
+  { sym: 'HG=F',      key: 'copper', divisor: 1 },       // Copper: Yahoo returns USD/lb directly (e.g. 4.62)
   { sym: 'SI=F',      key: 'silver', divisor: 1 },       // Silver $/oz
 ];
 

@@ -9,7 +9,7 @@ export function S2Monetary({ d }) {
   const changeLabel = rateIsHold ? 'ON HOLD' : rateIsHike ? `HIKED ${d.rateChange}` : `CUT ${d.rateChange}`;
 
   const rateAnnotation = d.rateSrc === 'live'
-    ? <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: '#4fc3a1', marginLeft: '0.5rem' }}>● LIVE · FRED</span>
+    ? <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: '#4fc3a1', marginLeft: '0.5rem' }}>● LIVE · AUTO-FETCHED</span>
     : d.rateSrc === 'manual'
     ? <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: 'var(--gold2)', marginLeft: '0.5rem' }}>● MANUAL OVERRIDE</span>
     : <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: '#e05c5c', marginLeft: '0.5rem' }} title="Update in ⚙ settings">⚠ HARDCODED · UPDATE IN ⚙</span>;

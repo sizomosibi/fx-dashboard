@@ -73,7 +73,8 @@ export function useCurrencyData() {
 
     const liveMacro = live.intlMacro[cur];
     const triad     = mergeTriad(base.triad, liveMacro);
-    const triadSrc  = live.status.triad === 'live' && liveMacro ? 'live' : 'stale';
+    // triadSrc: intlMacro was formerly FRED-driven; now always hardcoded (§11 Update Assistant handles updates)
+    const triadSrc  = 'stale';
 
     return {
       ...base,
