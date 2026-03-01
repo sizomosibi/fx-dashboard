@@ -3,9 +3,9 @@
 
 export const CURRENCIES = {
 AUD:{name:'AUD',full:'Australian Dollar',flag:'🇦🇺',country:'Australia',
-centralBank:'Reserve Bank of Australia (RBA)',interestRate:'4.10%',
-ratePath:['4.35%','4.10%','3.85%','3.60%'],ratePathLabels:['Nov 25','Feb 26','May 26','Aug 26'],
-rateChange:'-0.25%',bias:'dovish',
+centralBank:'Reserve Bank of Australia (RBA)',interestRate:'3.85%',
+ratePath:['3.60%','3.85%','4.10%','3.85%'],ratePathLabels:['Aug 25','Feb 26','May 26','Dec 26'],
+rateChange:'+0.25%',bias:'hawkish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.4%',c:'-0.3%',d:'down'},{n:'CPI (Trimmed Mean)',v:'2.7%',c:'-0.2%',d:'down'},{n:'PPI YoY',v:'1.8%',c:'-0.1%',d:'down'}],
   gro:[{n:'GDP YoY',v:'0.8%',c:'+0.2%',d:'up'},{n:'Retail Sales MoM',v:'-0.1%',c:'-0.4%',d:'down'},{n:'PMI Composite',v:'50.2',c:'+0.4',d:'up'}],
@@ -48,7 +48,7 @@ chains:[
 
 USD:{name:'USD',full:'US Dollar',flag:'🇺🇸',country:'United States',
 centralBank:'Federal Reserve (Fed)',interestRate:'3.50–3.75%',
-ratePath:['4.25–4.50%','3.50–3.75%','3.50%','3.25%'],ratePathLabels:['Dec 24','Feb 26','Jun 26','Dec 26'],
+ratePath:['4.25–4.50%','3.50–3.75%','3.50%','3.25%'],ratePathLabels:['Dec 24','Jan 26','Jun 26','Dec 26'],
 rateChange:'-0.25%',bias:'neutral',
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.9%',c:'+0.1%',d:'up'},{n:'Core PCE YoY',v:'2.6%',c:'0.0%',d:'up'},{n:'PPI YoY',v:'3.5%',c:'+0.3%',d:'up'}],
@@ -90,8 +90,8 @@ chains:[
 ]},
 
 EUR:{name:'EUR',full:'Euro',flag:'🇪🇺',country:'Eurozone',
-centralBank:'European Central Bank (ECB)',interestRate:'2.65%',
-ratePath:['3.15%','2.65%','2.15%','1.90%'],ratePathLabels:['Sep 25','Feb 26','May 26','Aug 26'],
+centralBank:'European Central Bank (ECB)',interestRate:'2.15%',
+ratePath:['2.40%','2.15%','1.90%','1.65%'],ratePathLabels:['Mar 25','Jun 25','Jun 26','Dec 26'],
 rateChange:'-0.25%',bias:'dovish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.5%',c:'-0.2%',d:'down'},{n:'Core CPI',v:'2.7%',c:'-0.1%',d:'down'},{n:'PPI YoY',v:'-1.1%',c:'+0.2%',d:'up'}],
@@ -129,9 +129,9 @@ chains:[
 ]},
 
 GBP:{name:'GBP',full:'British Pound Sterling',flag:'🇬🇧',country:'United Kingdom',
-centralBank:'Bank of England (BoE)',interestRate:'4.50%',
-ratePath:['4.75%','4.50%','4.25%','4.00%'],ratePathLabels:['Nov 25','Feb 26','May 26','Aug 26'],
-rateChange:'-0.25%',bias:'neutral',
+centralBank:'Bank of England (BoE)',interestRate:'3.75%',
+ratePath:['4.00%','3.75%','3.50%','3.25%'],ratePathLabels:['Nov 25','Dec 25','May 26','Aug 26'],
+rateChange:'-0.25%',bias:'dovish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'3.0%',c:'+0.2%',d:'up'},{n:'Services CPI',v:'5.0%',c:'0.0%',d:'up'},{n:'Core CPI',v:'3.7%',c:'+0.1%',d:'up'}],
   gro:[{n:'GDP MoM',v:'+0.4%',c:'+0.2%',d:'up'},{n:'PMI Composite',v:'50.5',c:'+0.3',d:'up'},{n:'Industrial Prod.',v:'+0.3%',c:'+0.5%',d:'up'}],
@@ -165,8 +165,8 @@ chains:[
 ]},
 
 JPY:{name:'JPY',full:'Japanese Yen',flag:'🇯🇵',country:'Japan',
-centralBank:'Bank of Japan (BoJ)',interestRate:'0.50%',
-ratePath:['0.25%','0.50%','0.75%','1.00%'],ratePathLabels:['Sep 25','Feb 26','Jun 26','Dec 26'],
+centralBank:'Bank of Japan (BoJ)',interestRate:'0.75%',
+ratePath:['0.50%','0.75%','1.00%','1.25%'],ratePathLabels:['Sep 25','Dec 25','Jun 26','Dec 26'],
 rateChange:'+0.25%',bias:'hawkish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'3.6%',c:'+0.2%',d:'up'},{n:'Core CPI (ex-food)',v:'3.1%',c:'+0.1%',d:'up'},{n:'PPI YoY',v:'4.2%',c:'+0.3%',d:'up'}],
@@ -203,8 +203,8 @@ chains:[
 ]},
 
 CHF:{name:'CHF',full:'Swiss Franc',flag:'🇨🇭',country:'Switzerland',
-centralBank:'Swiss National Bank (SNB)',interestRate:'0.25%',
-ratePath:['0.50%','0.25%','0.00%','-0.25%'],ratePathLabels:['Sep 25','Feb 26','Jun 26','Dec 26'],
+centralBank:'Swiss National Bank (SNB)',interestRate:'0.00%',
+ratePath:['0.25%','0.00%','-0.25%','-0.25%'],ratePathLabels:['Mar 25','Jun 25','Dec 26','Jun 27'],
 rateChange:'-0.25%',bias:'dovish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'0.4%',c:'-0.1%',d:'down'},{n:'Core CPI',v:'0.7%',c:'-0.1%',d:'down'},{n:'PPI YoY',v:'-2.1%',c:'+0.2%',d:'up'}],
@@ -238,8 +238,8 @@ chains:[
 ]},
 
 CAD:{name:'CAD',full:'Canadian Dollar',flag:'🇨🇦',country:'Canada',
-centralBank:'Bank of Canada (BoC)',interestRate:'3.00%',
-ratePath:['3.75%','3.00%','2.50%','2.25%'],ratePathLabels:['Sep 25','Feb 26','May 26','Aug 26'],
+centralBank:'Bank of Canada (BoC)',interestRate:'2.25%',
+ratePath:['2.50%','2.25%','2.00%','1.75%'],ratePathLabels:['Sep 25','Oct 25','Mar 26','Jun 26'],
 rateChange:'-0.25%',bias:'dovish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'1.9%',c:'-0.3%',d:'down'},{n:'Core CPI',v:'2.3%',c:'-0.2%',d:'down'},{n:'PPI YoY',v:'1.2%',c:'-0.4%',d:'down'}],
@@ -277,9 +277,9 @@ chains:[
 ]},
 
 NZD:{name:'NZD',full:'New Zealand Dollar',flag:'🇳🇿',country:'New Zealand',
-centralBank:'Reserve Bank of New Zealand (RBNZ)',interestRate:'3.75%',
-ratePath:['4.75%','3.75%','3.25%','3.00%'],ratePathLabels:['Aug 25','Feb 26','May 26','Aug 26'],
-rateChange:'-0.50%',bias:'dovish',
+centralBank:'Reserve Bank of New Zealand (RBNZ)',interestRate:'2.25%',
+ratePath:['2.50%','2.25%','2.00%','1.75%'],ratePathLabels:['Oct 25','Nov 25','May 26','Aug 26'],
+rateChange:'-0.25%',bias:'dovish',
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.2%',c:'-0.5%',d:'down'},{n:'Non-Tradeable CPI',v:'4.5%',c:'-0.3%',d:'down'},{n:'PPI Input',v:'1.1%',c:'-0.6%',d:'down'}],
   gro:[{n:'GDP QoQ',v:'-0.2%',c:'-0.4%',d:'down'},{n:'Retail Sales QoQ',v:'-0.8%',c:'-1.1%',d:'down'},{n:'Business Confidence',v:'-14',c:'-9',d:'down'}],
