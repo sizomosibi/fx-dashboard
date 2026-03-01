@@ -20,15 +20,17 @@ function useMergedCOT() {
   );
 }
 
-export function S7Cot() {
+export function S7Cot({ brief }) {
   const cur    = useCurrentCcy();
   const live   = useLiveData();
   const merged = useMergedCOT();
   const cotSrc = live.status.cot;
   const isLive = cotSrc === 'live';
+  const asOf   = live.cotAsOf || COT_AS_OF;
 
-  // Use live asOf date if available, else fall back to scores.js date
-  const asOf = live.cotAsOf || COT_AS_OF;
+  // Use AI commentary for the selected currency detail if available
+  const aiDetail  = brief?.brief?.cotCommentary;
+  const staticDet = merged[cur]?.detail;
 
   return (
     <>
@@ -107,9 +109,17 @@ export function S7Cot() {
               }}>
                 {merged[cur].net - merged[cur].prev > 0 ? '+' : ''}{merged[cur].net - merged[cur].prev}% WoW
               </span>
+              {aiDetail && (
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--teal)', marginLeft: '0.75rem' }}>
+                  ⚡ AI
+                </span>
+              )}
             </div>
             <div style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.6, marginTop: '0.2rem' }}>
-              {merged[cur].detail}
+              {brief?.loading
+                ? <span style={{ opacity: 0.4 }}>Generating AI commentary…</span>
+                : aiDetail || staticDet
+              }
             </div>
           </div>
         )}

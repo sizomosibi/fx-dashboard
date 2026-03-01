@@ -4,8 +4,29 @@ import { CURRENCIES } from '../../data/currencies.js';
 import { score, useTopPairs } from '../../hooks/useScores.js';
 import { useCurrentCcy } from '../../context/AppContext.jsx';
 
+// ── Skeleton card for loading state ─────────────────────────────────
+function TradeCardSkeleton() {
+  return (
+    <div className="trade-card" style={{ opacity: 0.35 }}>
+      <div style={{ height: '1rem',  background: '#1a1a1a', borderRadius: 2, width: '35%', marginBottom: '0.6rem' }} />
+      <div style={{ height: '0.75rem', background: '#161616', borderRadius: 2, width: '70%', marginBottom: '0.35rem' }} />
+      <div style={{ height: '0.75rem', background: '#161616', borderRadius: 2, width: '90%', marginBottom: '0.35rem' }} />
+      <div style={{ height: '0.75rem', background: '#161616', borderRadius: 2, width: '60%', marginBottom: '1rem' }} />
+      <div style={{ display: 'flex', gap: '1rem' }}>
+        {[40, 40, 40].map((w, i) => (
+          <div key={i} style={{ height: '2rem', background: '#111', borderRadius: 2, width: `${w}%` }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function TradeCard({ cur, otherCcy, thesis }) {
-  const { conviction = 65, summary, dir, entry, target, stop, risks = [], catalyst, timeframe, chain = [], tags = [] } = thesis;
+  const {
+    conviction = 65, summary, dir, entry, target, stop,
+    risks = [], catalyst, timeframe, chain = [], tags = [],
+  } = thesis;
+
   const convColor = conviction >= 75 ? 'var(--teal)' : conviction >= 50 ? 'var(--gold)' : 'var(--red)';
   const convLabel = conviction >= 75 ? 'HIGH' : conviction >= 50 ? 'MODERATE' : 'LOW';
 
@@ -13,7 +34,7 @@ function TradeCard({ cur, otherCcy, thesis }) {
     <div className="trade-card">
       <div className="tc-head">
         <div>
-          <div className="tc-pair">{cur}/{otherCcy}</div>
+          <div className="tc-pair">{thesis.pair || `${cur}/${otherCcy}`}</div>
           <div className="tc-summary">{summary}</div>
         </div>
         <span className={`tc-dir${dir === 'long' ? ' lng' : ' sht'}`}>{dir === 'long' ? 'LONG BASE' : 'SHORT BASE'}</span>
@@ -50,12 +71,16 @@ function TradeCard({ cur, otherCcy, thesis }) {
   );
 }
 
-export function S8Trades({ d }) {
+export function S8Trades({ d, brief }) {
   const cur     = useCurrentCcy();
-  const pairs   = useTopPairs();
+  const pairs   = useTopPairs();          // static fallback pairs from scores.js
   const allCcys = Object.keys(CURRENCIES).filter(c => c !== 'XAU');
   const sorted  = [...allCcys].sort((a, b) => score(b) - score(a));
-  const maxScore = Math.max(...allCcys.map(score));
+
+  // Use AI pair thesis if available, fall back to static PAIR_THESIS via useTopPairs
+  const aiThesis  = brief?.brief?.pairThesis;
+  const isAI      = Array.isArray(aiThesis) && aiThesis.length > 0;
+  const isLoading = brief?.loading;
 
   return (
     <>
@@ -107,16 +132,46 @@ export function S8Trades({ d }) {
         </table>
       </div>
 
-      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--muted)', letterSpacing: '0.1em', margin: '0.75rem 0 0.5rem' }}>
-        TOP TRADE IDEAS FOR {cur}
+      {/* Trade ideas header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '0.75rem 0 0.5rem' }}>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--muted)', letterSpacing: '0.1em' }}>
+          TOP TRADE IDEAS FOR {cur}
+        </span>
+        {isAI && (
+          <>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: 'var(--teal)' }}>
+              ⚡ AI · {brief.source === 'cache' ? 'CACHED' : 'LIVE'}
+            </span>
+            <button
+              onClick={brief.refresh}
+              title="Regenerate with current data"
+              style={{ background: 'none', border: '1px solid #2a2a2a', color: '#555', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', padding: '0.1rem 0.4rem', cursor: 'pointer', borderRadius: 2 }}
+            >↺ REFRESH</button>
+          </>
+        )}
       </div>
 
-      {pairs.length > 0
-        ? pairs.map(({ ccy: otherCcy, thesis }) => (
-            <TradeCard key={otherCcy} cur={cur} otherCcy={otherCcy} thesis={thesis} />
-          ))
-        : <Card><div style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>No trade thesis data available for this currency.</div></Card>
-      }
+      {/* Loading skeleton */}
+      {isLoading && (
+        <>
+          <TradeCardSkeleton />
+          <TradeCardSkeleton />
+        </>
+      )}
+
+      {/* AI-generated trade ideas */}
+      {!isLoading && isAI && aiThesis.map((thesis, i) => (
+        <TradeCard key={i} cur={cur} otherCcy={''} thesis={thesis} />
+      ))}
+
+      {/* Static fallback from scores.js when AI unavailable */}
+      {!isLoading && !isAI && (
+        pairs.length > 0
+          ? pairs.map(({ ccy: otherCcy, thesis }) => (
+              <TradeCard key={otherCcy} cur={cur} otherCcy={otherCcy} thesis={thesis} />
+            ))
+          : <Card><div style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>No trade thesis data available for this currency.</div></Card>
+      )}
     </>
   );
 }

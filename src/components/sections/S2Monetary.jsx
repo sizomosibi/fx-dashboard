@@ -2,9 +2,40 @@ import { SectionHead } from '../ui/SectionHead.jsx';
 import { Card } from '../ui/Card.jsx';
 import { Dot } from '../ui/Dot.jsx';
 
-export function S2Monetary({ d }) {
-  const rateIsHike = d.rateChange?.startsWith('+');
-  const rateIsHold = d.rateChange === '0.00%';
+// ── Skeleton for loading state ──────────────────────────────────────
+function SpeechSkeleton() {
+  return (
+    <div className="speech-card" style={{ opacity: 0.4 }}>
+      <div style={{ height: '0.75rem', background: '#222', borderRadius: 2, width: '40%', marginBottom: '0.5rem' }} />
+      <div style={{ height: '0.7rem',  background: '#1a1a1a', borderRadius: 2, width: '90%', marginBottom: '0.3rem' }} />
+      <div style={{ height: '0.7rem',  background: '#1a1a1a', borderRadius: 2, width: '75%', marginBottom: '0.3rem' }} />
+      <div style={{ height: '0.7rem',  background: '#1a1a1a', borderRadius: 2, width: '55%' }} />
+    </div>
+  );
+}
+
+// ── AI badge ────────────────────────────────────────────────────────
+function AIBadge({ source, generatedAt, onRefresh }) {
+  const ts = generatedAt
+    ? new Date(generatedAt).toLocaleString('en-AU', { dateStyle: 'short', timeStyle: 'short' })
+    : null;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+      <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: 'var(--teal)', letterSpacing: '0.08em' }}>
+        ⚡ AI · {source === 'cache' ? `CACHED ${ts}` : `LIVE ${ts || ''}`}
+      </span>
+      <button
+        onClick={onRefresh}
+        title="Regenerate with current data"
+        style={{ background: 'none', border: '1px solid #2a2a2a', color: '#555', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', padding: '0.1rem 0.4rem', cursor: 'pointer', borderRadius: 2 }}
+      >↺ REFRESH</button>
+    </div>
+  );
+}
+
+export function S2Monetary({ d, brief }) {
+  const rateIsHike  = d.rateChange?.startsWith('+');
+  const rateIsHold  = d.rateChange === '0.00%';
   const changeClass = rateIsHold ? 'hold' : rateIsHike ? 'hike' : 'cut';
   const changeLabel = rateIsHold ? 'ON HOLD' : rateIsHike ? `HIKED ${d.rateChange}` : `CUT ${d.rateChange}`;
 
@@ -13,6 +44,11 @@ export function S2Monetary({ d }) {
     : d.rateSrc === 'manual'
     ? <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: 'var(--gold2)', marginLeft: '0.5rem' }}>● MANUAL OVERRIDE</span>
     : <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: '#e05c5c', marginLeft: '0.5rem' }} title="Update in ⚙ settings">⚠ HARDCODED · UPDATE IN ⚙</span>;
+
+  // Use AI speeches if available, fall back to static data
+  const speeches      = brief?.brief?.cbSpeeches ?? d.cbSpeeches;
+  const isAI          = !!brief?.brief?.cbSpeeches;
+  const isLoading     = brief?.loading;
 
   return (
     <>
@@ -54,7 +90,11 @@ export function S2Monetary({ d }) {
       </div>
 
       <Card label="RECENT GUIDANCE — CB SPEECHES">
-        {d.cbSpeeches?.map((s, i) => (
+        {isAI && (
+          <AIBadge source={brief.source} generatedAt={brief.generatedAt} onRefresh={brief.refresh} />
+        )}
+        {isLoading && <SpeechSkeleton />}
+        {!isLoading && speeches?.map((s, i) => (
           <div key={i} className="speech-card">
             <div className="sp-head">
               <div>

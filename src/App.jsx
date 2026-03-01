@@ -17,23 +17,24 @@ import { S10Exec }         from './components/sections/S10Exec.jsx';
 import { S11Update }       from './components/sections/S11Update.jsx';
 import { S12News }         from './components/sections/S12News.jsx';
 import { GoldBrief }       from './components/sections/GoldBrief.jsx';
-import { useCurrentCcy }   from './context/AppContext.jsx';
+import { useCurrentCcy, useLiveData } from './context/AppContext.jsx';
 import { useCurrencyData } from './hooks/useCurrencyData.js';
 import { useMarketData }   from './hooks/useMarketData.js';
 import { useFetch }        from './hooks/useFetch.js';
+import { useAIBrief }      from './hooks/useAIBrief.js';
 import './styles/global.css';
 
-function FXBrief({ d, mkt }) {
+function FXBrief({ d, mkt, brief }) {
   return (
     <>
       <S1Macro    mkt={mkt} />
-      <S2Monetary d={d} />
+      <S2Monetary d={d} brief={brief} />
       <S3Triad    d={d} />
       <S4External d={d} />
       <S5Calendar d={d} />
-      <S6Geo      d={d} />
-      <S7Cot />
-      <S8Trades   d={d} />
+      <S6Geo      d={d} brief={brief} />
+      <S7Cot      brief={brief} />
+      <S8Trades   d={d} brief={brief} />
       <S9AI       d={d} mkt={mkt} />
       <S10Exec />
       <S11Update />
@@ -43,15 +44,20 @@ function FXBrief({ d, mkt }) {
 }
 
 function Brief() {
-  const cur = useCurrentCcy();
-  const d   = useCurrencyData();
-  const mkt = useMarketData();
+  const cur  = useCurrentCcy();
+  const live = useLiveData();
+  const d    = useCurrencyData();
+  const mkt  = useMarketData();
+
+  // AI-powered brief: generates CB language, geo risks, trade thesis, COT commentary
+  // Cached 24hrs in localStorage per currency. Falls back to static data silently.
+  const brief = useAIBrief(cur, live.cot);
 
   return (
     <main className="brief">
       {cur === 'XAU'
         ? <GoldBrief d={d} mkt={mkt} />
-        : <FXBrief   d={d} mkt={mkt} />
+        : <FXBrief   d={d} mkt={mkt} brief={brief} />
       }
     </main>
   );

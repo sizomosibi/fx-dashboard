@@ -51,6 +51,7 @@ exports.handler = async (event) => {
         max_tokens: body.max_tokens || 1000,
         system:     body.system,
         messages:   body.messages,
+        ...(body.tools ? { tools: body.tools } : {}),
       }),
     });
 
