@@ -27,7 +27,7 @@ const FALLBACK = {
   JPY: '0.75%',       // BoJ hiked Dec 19, 2025
   CHF: '0.00%',       // SNB cut Jun 19, 2025
   CAD: '2.25%',       // BoC cut Oct 29, 2025
-  NZD: '2.25%',       // RBNZ cut Nov 26, 2025
+  NZD: '0.25%',       // RBNZ cut Nov 26, 2025
 };
 
 const COUNTRY_MAP = {
