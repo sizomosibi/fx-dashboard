@@ -38,13 +38,20 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
 
+    // Detect if request uses web_search tool (requires beta header)
+    const usesWebSearch = Array.isArray(body.tools) &&
+      body.tools.some(t => t.type === 'web_search_20250305');
+
     // Forward the request to Anthropic, injecting the server-side key
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,   // ← set in Netlify dashboard
+        'Content-Type':      'application/json',
+        'x-api-key':         process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
+        // Required for web_search_20250305 tool type — without this,
+        // Anthropic returns 400 "unknown tool type" and the call fails silently
+        ...(usesWebSearch ? { 'anthropic-beta': 'web-search-2025-03-05' } : {}),
       },
       body: JSON.stringify({
         model:      body.model      || 'claude-sonnet-4-20250514',

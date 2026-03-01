@@ -160,6 +160,12 @@ export function S1Macro({ mkt, globalBrief: gb }) {
               </div>
               <AIBadge gb={gb} />
             </div>
+            {gb?.error && (
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#e05c5c', marginBottom: '0.3rem', lineHeight: 1.5 }}>
+                ⚠ AI fetch failed: {gb.error} — showing static baseline.
+                {gb.error.includes('timeout') || gb.error.includes('504') ? ' (Function timeout — check claude-proxy timeout in netlify.toml)' : ''}
+              </div>
+            )}
             <div className="risk-env-name">{env?.name || 'Risk-Off — Tariff Uncertainty & Geopolitical Tension'}</div>
             <div className="risk-env-desc">
               {env?.desc || 'US trade policy uncertainty suppressing risk appetite. VIX elevated. Gold near all-time highs. Carry trades unwinding. Safe-haven currencies (USD, JPY, CHF, Gold) bid.'}

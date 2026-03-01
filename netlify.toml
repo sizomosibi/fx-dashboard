@@ -9,6 +9,9 @@
 [functions]
   node_bundler = "esbuild"
 
+[functions."claude-proxy"]
+  timeout = 60   # web_search tool calls take 15-45s; default 10s kills them
+
 [functions."market-proxy"]
   timeout = 20
 

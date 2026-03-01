@@ -179,8 +179,35 @@ export function S6Geo({ d, brief, globalBrief: gb }) {
       ))}
 
       {!globalLoad && !globalIsAI && (
-        <div style={{ padding: '0.75rem 1rem', border: '1px solid #1a1a1a', color: '#444', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', marginBottom: '0.5rem' }}>
-          Global risks unavailable — ANTHROPIC_API_KEY not configured in Netlify, or fetch failed. Check browser console.
+        <div style={{ padding: '0.75rem 1rem', border: '1px solid #2a1a1a', background: 'rgba(224,92,92,0.04)', marginBottom: '0.5rem' }}>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.7rem', color: '#e05c5c', marginBottom: '0.3rem' }}>
+            ⚠ GLOBAL BRIEF UNAVAILABLE
+          </div>
+          {gb?.error ? (
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#666', lineHeight: 1.6 }}>
+              Error: {gb.error}
+              {(gb.error.includes('504') || gb.error.includes('timeout') || gb.error.includes('502')) &&
+                <span style={{ color: '#e09a30', display: 'block', marginTop: '0.2rem' }}>
+                  → Function timeout. claude-proxy needs timeout = 60 in netlify.toml (web search takes 15–45s).
+                </span>
+              }
+              {gb.error.includes('unknown tool') &&
+                <span style={{ color: '#e09a30', display: 'block', marginTop: '0.2rem' }}>
+                  → Missing anthropic-beta header. claude-proxy.js needs 'anthropic-beta': 'web-search-2025-03-05'.
+                </span>
+              }
+            </div>
+          ) : (
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#555' }}>
+              ANTHROPIC_API_KEY not set in Netlify env vars, or fetch failed. Check Netlify function logs.
+            </div>
+          )}
+          {gb?.refresh && (
+            <button onClick={gb.refresh}
+              style={{ marginTop: '0.5rem', background: 'none', border: '1px solid #2a2a2a', color: '#555', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.64rem', padding: '0.2rem 0.5rem', cursor: 'pointer' }}>
+              ↺ RETRY
+            </button>
+          )}
         </div>
       )}
 
