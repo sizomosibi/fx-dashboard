@@ -5,6 +5,7 @@ import { MARKET_SNAPSHOT } from '../../data/marketSnapshot.js';
 import { COPPER_ANALYSIS } from '../../data/scores.js';
 import { CURRENCIES } from '../../data/currencies.js';
 
+// ── Static structural data ─────────────────────────────────────────
 const CARRY_PAIRS = [
   { pair: 'AUD/JPY', spread: '3.60%', status: 'at risk',   note: 'BoJ hiking compresses spread' },
   { pair: 'NZD/JPY', spread: '3.25%', status: 'unwinding', note: 'RBNZ cuts + BoJ hikes = maximum compression' },
@@ -13,17 +14,60 @@ const CARRY_PAIRS = [
 ];
 
 const CB_GROUPS = [
-  { grp: 'HIKING',               ccys: ['JPY'],            color: 'var(--teal)', desc: 'BoJ raising rates for first time in decades. Carry unwind risk.' },
-  { grp: 'ON HOLD',              ccys: ['USD', 'GBP'],     color: 'var(--gold)', desc: 'Fed & BoE constrained. GBP by services inflation. USD by sticky CPI.' },
-  { grp: 'CUTTING SLOWLY',       ccys: ['AUD', 'EUR'],     color: '#b8690a',     desc: 'RBA cautious first cut. ECB easing toward neutral ~2%.' },
-  { grp: 'CUTTING AGGRESSIVELY', ccys: ['NZD', 'CAD', 'CHF'], color: 'var(--red)', desc: 'RBNZ in recession cuts. BoC flagging tariff risk. SNB near zero.' },
+  { grp: 'HIKING',               ccys: ['JPY'],               color: 'var(--teal)', desc: 'BoJ raising rates for first time in decades. Carry unwind risk.' },
+  { grp: 'ON HOLD',              ccys: ['USD', 'GBP'],        color: 'var(--gold)', desc: 'Fed & BoE constrained. GBP by services inflation. USD by sticky CPI.' },
+  { grp: 'CUTTING SLOWLY',       ccys: ['AUD', 'EUR'],        color: '#b8690a',     desc: 'RBA cautious first cut. ECB easing toward neutral ~2%.' },
+  { grp: 'CUTTING AGGRESSIVELY', ccys: ['NZD', 'CAD', 'CHF'], color: 'var(--red)',  desc: 'RBNZ in recession cuts. BoC flagging tariff risk. SNB near zero.' },
 ];
 
 const SPEECH_SCENARIOS = [
-  { type: 'hawk', label: 'HAWKISH READ',  sub: '10Y rises on 1H', chain: ['10Y Yield ↑', 'Fed seen holding longer', 'USD bid', 'Gold dips', 'AUD/NZD/CAD sell', 'USD/JPY rises'] },
-  { type: 'dove', label: 'DOVISH READ',   sub: '10Y falls on 1H', chain: ['10Y Yield ↓', 'Cut bets priced in', 'USD sold', 'Gold rallies', 'AUD/NZD rise', 'USD/JPY falls'] },
+  { type: 'hawk', label: 'HAWKISH READ',  sub: '10Y rises in 1H',        chain: ['10Y Yield ↑', 'Fed holding longer', 'USD bid', 'Gold dips', 'AUD/NZD/CAD sell', 'USD/JPY rises'] },
+  { type: 'dove', label: 'DOVISH READ',   sub: '10Y falls in 1H',        chain: ['10Y Yield ↓', 'Cut bets priced in', 'USD sold', 'Gold rallies', 'AUD/NZD rise', 'USD/JPY falls'] },
   { type: 'stag', label: 'STAGFLATION',   sub: 'Yield up + growth weak', chain: ['Inflation up', 'Growth weak', 'Fed trapped', 'Real rates fall', 'Gold surges', 'USD mixed'] },
 ];
+
+const SENTIMENT_STYLES = {
+  'risk-off': { border: 'rgba(208,90,74,0.2)',    borderLeft: 'var(--red)',   background: 'rgba(139,32,32,0.07)',   tagColor: 'var(--red)'   },
+  'risk-on':  { border: 'rgba(79,195,161,0.2)',   borderLeft: 'var(--teal)',  background: 'rgba(79,195,161,0.04)',  tagColor: 'var(--teal)'  },
+  neutral:    { border: 'rgba(184,147,62,0.2)',   borderLeft: 'var(--gold)',  background: 'rgba(184,147,62,0.04)', tagColor: 'var(--gold)'  },
+};
+
+function AIBadge({ gb }) {
+  if (!gb?.globalBrief && !gb?.loading) return null;
+  const ts = gb.generatedAt
+    ? new Date(gb.generatedAt).toLocaleTimeString('en-AU', { timeStyle: 'short' })
+    : null;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      {gb.loading
+        ? <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#555' }}>⚡ AI GENERATING…</span>
+        : <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: 'var(--teal)', letterSpacing: '0.08em' }}>
+            ⚡ AI · {gb.source === 'cache' ? `CACHED ${ts}` : `LIVE ${ts || ''}`}
+          </span>
+      }
+      {!gb.loading && (
+        <button onClick={gb.refresh} title="Regenerate with live news"
+          style={{ background: 'none', border: '1px solid #2a2a2a', color: '#555', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', padding: '0.1rem 0.4rem', cursor: 'pointer', borderRadius: 2 }}>
+          ↺ REFRESH
+        </button>
+      )}
+    </div>
+  );
+}
+
+function BannerSkeleton() {
+  return (
+    <div className="risk-banner" style={{ opacity: 0.35 }}>
+      <div className="risk-icon">⚠️</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ height: '0.65rem', background: '#2a1010', borderRadius: 2, width: '30%', marginBottom: '0.4rem' }} />
+        <div style={{ height: '1.1rem',  background: '#221010', borderRadius: 2, width: '55%', marginBottom: '0.4rem' }} />
+        <div style={{ height: '0.7rem',  background: '#1a1010', borderRadius: 2, width: '90%', marginBottom: '0.3rem' }} />
+        <div style={{ height: '0.7rem',  background: '#1a1010', borderRadius: 2, width: '75%' }} />
+      </div>
+    </div>
+  );
+}
 
 function RiskCell({ label, obj, signal, sigLabel, note }) {
   return (
@@ -53,9 +97,7 @@ function SpeechScenario({ scenario }) {
   return (
     <div className="speech-scenario">
       <div className="ss-header">
-        <span className={`ss-type ${isStag ? '' : type}`} style={isStag ? { color: 'var(--gold2)', borderColor: 'rgba(184,147,62,0.4)' } : {}}>
-          {label}
-        </span>
+        <span className={`ss-type ${isStag ? '' : type}`} style={isStag ? { color: 'var(--gold2)', borderColor: 'rgba(184,147,62,0.4)' } : {}}>{label}</span>
         <span style={{ fontSize: '0.72rem', color: '#555' }}>{sub}</span>
       </div>
       <div className="ss-chain">
@@ -70,21 +112,20 @@ function SpeechScenario({ scenario }) {
   );
 }
 
-export function S1Macro({ mkt }) {
+export function S1Macro({ mkt, globalBrief: gb }) {
   const { yields, vix, dxy, spx, gold, oil, copper, fedSpeeches } = mkt;
 
   const rsdItems = [
-    { label: 'US 10Y YIELD',      obj: yields.US10Y, signal: yields.US10Y.dir === 'up' ? 'risk-off' : 'risk-on', sigLabel: yields.US10Y.dir === 'up' ? 'YIELDS RISING → HAWKISH' : 'YIELDS FALLING → DOVISH', note: 'Rising 10Y = hawkish. Falling = dovish.' },
-    { label: 'VIX — FEAR GAUGE',  obj: vix,   signal: parseFloat(vix.v) > 20 ? 'risk-off' : 'risk-on', sigLabel: parseFloat(vix.v) > 20 ? 'ELEVATED FEAR' : 'CALM MARKETS', note: '<20 = risk-on. 20-30 = caution. >30 = crisis.' },
-    { label: 'DXY — US DOLLAR',   obj: dxy,   signal: dxy.dir === 'up' ? 'risk-off' : 'risk-on', sigLabel: dxy.dir === 'down' ? 'USD WEAKENING' : 'USD STRENGTHENING', note: 'DXY ↑ = risk-off. DXY ↓ = risk-on.' },
-    { label: 'S&P 500',           obj: spx,   signal: spx.dir === 'down' ? 'risk-off' : 'risk-on', sigLabel: spx.dir === 'down' ? 'EQUITIES SELLING' : 'EQUITIES RISING', note: 'S&P falling = risk-off → JPY/CHF/Gold bid.' },
-    { label: 'GOLD XAU/USD',      obj: gold,  signal: gold.dir === 'up' ? 'risk-off' : 'risk-on', sigLabel: gold.dir === 'up' ? 'SAFE-HAVEN BID' : 'RISK-ON SELLING', note: 'Gold ↑ = geopolitical fear or real rates falling.' },
-    { label: 'WTI CRUDE OIL',     obj: oil,   signal: oil.dir === 'down' ? 'risk-off' : 'risk-on', sigLabel: oil.dir === 'down' ? 'OIL FALLING → CAD↓' : 'OIL RISING → CAD↑', note: 'Oil ↑ = CAD bullish, inflation risk.' },
-    { label: 'COPPER CMX',        obj: copper, signal: copper.dir === 'down' ? 'risk-off' : 'risk-on', sigLabel: copper.dir === 'down' ? 'DR. COPPER BEARISH' : 'DR. COPPER BULLISH', note: '"Dr. Copper" leads AUD and global risk appetite.' },
+    { label: 'US 10Y YIELD',      obj: yields.US10Y,        signal: yields.US10Y.dir === 'up'        ? 'risk-off' : 'risk-on', sigLabel: yields.US10Y.dir === 'up'  ? 'YIELDS RISING → HAWKISH' : 'YIELDS FALLING → DOVISH',  note: 'Rising 10Y = hawkish. Falling = dovish.' },
+    { label: 'VIX — FEAR GAUGE',  obj: vix,                 signal: parseFloat(vix.v) > 20           ? 'risk-off' : 'risk-on', sigLabel: parseFloat(vix.v) > 20     ? 'ELEVATED FEAR' : 'CALM MARKETS',                        note: '<20 = risk-on. 20-30 = caution. >30 = crisis.' },
+    { label: 'DXY — US DOLLAR',   obj: dxy,                 signal: dxy.dir === 'up'                 ? 'risk-off' : 'risk-on', sigLabel: dxy.dir === 'down'          ? 'USD WEAKENING' : 'USD STRENGTHENING',                    note: 'DXY ↑ = risk-off. DXY ↓ = risk-on.' },
+    { label: 'S&P 500',           obj: spx,                 signal: spx.dir === 'down'               ? 'risk-off' : 'risk-on', sigLabel: spx.dir === 'down'          ? 'EQUITIES SELLING' : 'EQUITIES RISING',                   note: 'S&P falling = risk-off → JPY/CHF/Gold bid.' },
+    { label: 'GOLD XAU/USD',      obj: gold,                signal: gold.dir === 'up'                ? 'risk-off' : 'risk-on', sigLabel: gold.dir === 'up'           ? 'SAFE-HAVEN BID' : 'RISK-ON SELLING',                     note: 'Gold ↑ = geopolitical fear or real rates falling.' },
+    { label: 'WTI CRUDE OIL',     obj: oil,                 signal: oil.dir === 'down'               ? 'risk-off' : 'risk-on', sigLabel: oil.dir === 'down'          ? 'OIL FALLING → CAD↓' : 'OIL RISING → CAD↑',              note: 'Oil ↑ = CAD bullish, inflation risk.' },
+    { label: 'COPPER CMX',        obj: copper,              signal: copper.dir === 'down'            ? 'risk-off' : 'risk-on', sigLabel: copper.dir === 'down'       ? 'DR. COPPER BEARISH' : 'DR. COPPER BULLISH',              note: '"Dr. Copper" leads AUD and global risk appetite.' },
     { label: '2s10s YIELD CURVE', obj: yields.spread2s10s, signal: yields.spread2s10s.signal === 'norm' ? 'risk-on' : 'risk-off', sigLabel: (yields.spread2s10s.direction || 'Normal').toUpperCase(), note: yields.spread2s10s.note },
   ];
 
-  // Use full Treasury curve if available from proxy, else fall back to 4-point snapshot
   const ycTenors = yields.curve?.length
     ? yields.curve.map(c => ({ t: c.tenor, v: c.val }))
     : [
@@ -94,25 +135,38 @@ export function S1Macro({ mkt }) {
         { t: '30Y', v: parseFloat(yields.US30Y.v) },
       ];
   const ycMax = Math.max(...ycTenors.map(x => x.v));
-
   const stColor = s => s === 'unwinding' ? 'var(--red)' : s === 'at risk' ? 'var(--gold)' : 'var(--teal)';
+
+  const env     = gb?.globalBrief?.riskEnvironment;
+  const sStyle  = SENTIMENT_STYLES[env?.sentiment] || SENTIMENT_STYLES['neutral'];
+  const isAI    = !!env;
+  const carryAI = gb?.globalBrief?.carryCommentary;
 
   return (
     <>
       <SectionHead num={1} title="Global Macro Context & Risk Sentiment Dashboard" />
 
-      <div className="risk-banner">
-        <div className="risk-icon">⚠️</div>
-        <div>
-          <div className="risk-env-tag">GLOBAL RISK ENVIRONMENT — WEEK OF FEB 23–27, 2026</div>
-          <div className="risk-env-name">Risk-Off — Tariff Uncertainty & Geopolitical Tension</div>
-          <div className="risk-env-desc">
-            US trade policy uncertainty suppressing risk appetite. VIX elevated. Gold near all-time highs.
-            Carry trades unwinding. Safe-haven currencies (USD, JPY, CHF, Gold) bid.
-            Core PCE Thu Feb 26 is the week's pivotal event.
+      {gb?.loading && <BannerSkeleton />}
+
+      {!gb?.loading && (
+        <div className="risk-banner" style={isAI ? { background: sStyle.background, border: `1px solid ${sStyle.border}`, borderLeft: `3px solid ${sStyle.borderLeft}` } : {}}>
+          <div className="risk-icon">
+            {env?.sentiment === 'risk-on' ? '🟢' : env?.sentiment === 'neutral' ? '🟡' : '⚠️'}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
+              <div className="risk-env-tag" style={isAI ? { color: sStyle.tagColor } : {}}>
+                {env?.tag || 'GLOBAL RISK ENVIRONMENT'} — {env?.weekOf || 'THIS WEEK'}
+              </div>
+              <AIBadge gb={gb} />
+            </div>
+            <div className="risk-env-name">{env?.name || 'Risk-Off — Tariff Uncertainty & Geopolitical Tension'}</div>
+            <div className="risk-env-desc">
+              {env?.desc || 'US trade policy uncertainty suppressing risk appetite. VIX elevated. Gold near all-time highs. Carry trades unwinding. Safe-haven currencies (USD, JPY, CHF, Gold) bid.'}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="card-lbl" style={{ marginBottom: '0.4rem' }}>
         RISK SENTIMENT INDICATORS — READ AS A COMPOSITE
@@ -123,7 +177,6 @@ export function S1Macro({ mkt }) {
 
       <div className="bond-block">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.85rem' }}>
-          {/* Left: yields + curve */}
           <div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--gold2)', letterSpacing: '0.15em', marginBottom: '0.65rem' }}>
               US TREASURY YIELD CURVE <Dot src={yields.US10Y.src || 'stale'} />
@@ -138,7 +191,6 @@ export function S1Macro({ mkt }) {
                 </div>
               ))}
             </div>
-
             <div className="yield-curve-block" style={{ marginTop: '0.5rem' }}>
               <div className="yc-label">YIELD CURVE SHAPE — {(yields.spread2s10s.direction || 'Normal').toUpperCase()}</div>
               <div className="yc-bars">
@@ -151,7 +203,6 @@ export function S1Macro({ mkt }) {
                 <span className={`spread-pill ${yields.spread2s10s.signal}`}>{yields.spread2s10s.v}</span>
               </div>
             </div>
-
             <div style={{ background: 'rgba(184,147,62,0.07)', border: '1px solid rgba(184,147,62,0.2)', padding: '0.5rem 0.65rem', marginTop: '0.5rem' }}>
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.65rem', color: 'var(--gold2)', letterSpacing: '0.12em', marginBottom: '0.2rem' }}>REAL RATE (10Y − CPI)</div>
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '1.1rem', color: 'var(--gold2)' }}>
@@ -162,7 +213,6 @@ export function S1Macro({ mkt }) {
             </div>
           </div>
 
-          {/* Right: Fed speech framework */}
           <div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--gold2)', letterSpacing: '0.15em', marginBottom: '0.35rem' }}>
               HOW TO READ FED SPEECHES VIA 10Y YIELD (1H CHART)
@@ -171,7 +221,6 @@ export function S1Macro({ mkt }) {
               Watch the US 10Y yield on the <strong style={{ color: 'var(--gold2)' }}>1-hour chart</strong> for the first 60 minutes after any Fed official speaks. The yield move is the market's verdict — not the headline.
             </div>
             {SPEECH_SCENARIOS.map(s => <SpeechScenario key={s.type} scenario={s} />)}
-
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: 'var(--gold2)', letterSpacing: '0.15em', margin: '0.6rem 0 0.4rem' }}>
               RECENT FED SPEECH → YIELD REACTION LOG
             </div>
@@ -197,7 +246,6 @@ export function S1Macro({ mkt }) {
         </div>
       </div>
 
-      {/* Copper + Carry */}
       <div className="two-col">
         <Card label={<>DR. COPPER — GLOBAL GROWTH PROXY <Dot src={copper.src || 'stale'} /></>}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '0.5rem' }}>
@@ -214,9 +262,15 @@ export function S1Macro({ mkt }) {
         </Card>
 
         <Card label={<>CARRY TRADE MONITOR <span className="badge bear">UNWINDING</span></>}>
-          <div style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.55, marginBottom: '0.6rem' }}>
-            Carry trades borrow in low-rate currencies (JPY, CHF) to invest in high-yield ones. When BoJ hikes or risk spikes, rapid unwind occurs.
-          </div>
+          {gb?.loading && (
+            <div style={{ height: '2.5rem', background: '#111', borderRadius: 2, marginBottom: '0.6rem', opacity: 0.3 }} />
+          )}
+          {!gb?.loading && (
+            <div style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.55, marginBottom: '0.6rem' }}>
+              {carryAI || 'Carry trades borrow in low-rate currencies (JPY, CHF) to invest in high-yield ones. When BoJ hikes or risk spikes, rapid unwind occurs.'}
+              {isAI && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--teal)', marginLeft: '0.5rem' }}>⚡ AI</span>}
+            </div>
+          )}
           {CARRY_PAIRS.map((p, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.3rem 0', borderBottom: '1px solid var(--rule2)' }}>
               <div>
@@ -232,7 +286,6 @@ export function S1Macro({ mkt }) {
         </Card>
       </div>
 
-      {/* CB Divergence */}
       <Card label="G10 CENTRAL BANK DIVERGENCE — THE PRIMARY FX ENGINE">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '0.4rem' }}>
           {CB_GROUPS.map((g, i) => (

@@ -22,17 +22,18 @@ import { useCurrencyData } from './hooks/useCurrencyData.js';
 import { useMarketData }   from './hooks/useMarketData.js';
 import { useFetch }        from './hooks/useFetch.js';
 import { useAIBrief }      from './hooks/useAIBrief.js';
+import { useGlobalBrief }  from './hooks/useGlobalBrief.js';
 import './styles/global.css';
 
-function FXBrief({ d, mkt, brief }) {
+function FXBrief({ d, mkt, brief, globalBrief }) {
   return (
     <>
-      <S1Macro    mkt={mkt} />
+      <S1Macro    mkt={mkt} globalBrief={globalBrief} />
       <S2Monetary d={d} brief={brief} />
       <S3Triad    d={d} />
       <S4External d={d} />
       <S5Calendar d={d} />
-      <S6Geo      d={d} brief={brief} />
+      <S6Geo      d={d} brief={brief} globalBrief={globalBrief} />
       <S7Cot      brief={brief} />
       <S8Trades   d={d} brief={brief} />
       <S9AI       d={d} mkt={mkt} />
@@ -49,15 +50,17 @@ function Brief() {
   const d    = useCurrencyData();
   const mkt  = useMarketData();
 
-  // AI-powered brief: generates CB language, geo risks, trade thesis, COT commentary
-  // Cached 24hrs in localStorage per currency. Falls back to static data silently.
+  // AI-powered brief: per-currency CB language, geo risks, trade thesis, COT commentary
   const brief = useAIBrief(cur, live.cot);
+  // Global brief: app-load once, covers tariffs/wars/geo news across all currencies
+  const { globalBrief, loading: globalLoading, source: globalSrc, generatedAt: globalTs, refresh: globalRefresh } = useGlobalBrief();
+  const gbProp = { globalBrief, loading: globalLoading, source: globalSrc, generatedAt: globalTs, refresh: globalRefresh };
 
   return (
     <main className="brief">
       {cur === 'XAU'
         ? <GoldBrief d={d} mkt={mkt} />
-        : <FXBrief   d={d} mkt={mkt} brief={brief} />
+        : <FXBrief   d={d} mkt={mkt} brief={brief} globalBrief={gbProp} />
       }
     </main>
   );
