@@ -197,7 +197,7 @@ export function S5Calendar({ d }) {
         <Dot src={calSrc} />
         {isLive ? (
           <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--teal)' }}>
-            LIVE — ForexFactory · This week + next week
+            LIVE — ForexFactory · Medium &amp; high impact only
           </span>
         ) : (
           <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: '#555' }}>
@@ -272,7 +272,7 @@ export function S5Calendar({ d }) {
       <Card style={{ overflowX: 'auto' }}>
         {isLive && liveEvents?.length === 0 ? (
           <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.84rem', color: '#444', padding: '0.5rem 0', textAlign: 'center' }}>
-            No scheduled events for {cur} this week or next
+            No medium or high impact events for {cur} this week or next
           </div>
         ) : (
           <table className="cal-table">

@@ -58,6 +58,12 @@ function fmtTime(isoStr) {
 function transformEvents(rawEvents) {
   return (rawEvents || [])
     .filter(e => G10.has((e.country || '').toUpperCase()))
+    .filter(e => {
+      // Only return medium and high impact events — low impact events add noise
+      // and the AI trigger enrichment only covers medium/high anyway
+      const imp = normaliseImpact(e.impact);
+      return imp === 'high' || imp === 'medium';
+    })
     .map(e => ({
       currency: (e.country || '').toUpperCase(),
       date:     fmtDate(e.date),
