@@ -603,6 +603,24 @@ code{font-family:var(--mono);font-size:.9em;}
   background: var(--paper3);
 }
 
+/* ── Currency bar separator + tool tabs (Guide / Thesis) ─────── */
+.ccy-bar-sep {
+  width: 1px;
+  background: var(--rule);
+  margin: 0.35rem 0.2rem;
+  flex-shrink: 0;
+}
+.ccy-btn-tool {
+  color: #555;
+  letter-spacing: 0.05em;
+}
+.ccy-btn-tool:hover { color: var(--muted); }
+.ccy-btn-tool.active {
+  border-bottom-color: var(--teal);
+  color: var(--teal);
+  background: var(--paper3);
+}
+
 /* ── §01 RSD — actual class names from S1Macro.jsx ──────────── */
 /* CSS had .rsd-lbl/.rsd-v/.rsd-chg/.rsd-sig — JSX uses different names */
 .risk-banner {

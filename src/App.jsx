@@ -17,7 +17,9 @@ import { S10Exec }         from './components/sections/S10Exec.jsx';
 import { S11Update }       from './components/sections/S11Update.jsx';
 import { S12News }         from './components/sections/S12News.jsx';
 import { GoldBrief }       from './components/sections/GoldBrief.jsx';
-import { useCurrentCcy, useLiveData } from './context/AppContext.jsx';
+import { GuideView }       from './components/sections/GuideView.jsx';
+import { ThesisView }      from './components/sections/ThesisView.jsx';
+import { useCurrentCcy, useCurrentView, useLiveData } from './context/AppContext.jsx';
 import { useCurrencyData } from './hooks/useCurrencyData.js';
 import { useMarketData }   from './hooks/useMarketData.js';
 import { useFetch }        from './hooks/useFetch.js';
@@ -47,6 +49,7 @@ function FXBrief({ d, mkt, brief, globalBrief, matrixEnrich }) {
 
 function Brief() {
   const cur  = useCurrentCcy();
+  const view = useCurrentView();
   const live = useLiveData();
   const d    = useCurrencyData();
   const mkt  = useMarketData();
@@ -58,6 +61,10 @@ function Brief() {
   const gbProp = { globalBrief, loading: globalLoading, source: globalSrc, generatedAt: globalTs, refresh: globalRefresh };
   // Matrix enrich: AI-derived riskType + commodityExposure for all G10 currencies
   const matrixEnrich = useMatrixEnrich();
+
+  // Static guide views — full-width, no sidebar dependency on currency data
+  if (view === 'guide')   return <main className="brief"><GuideView /></main>;
+  if (view === 'thesis')  return <main className="brief"><ThesisView /></main>;
 
   return (
     <main className="brief">

@@ -35,6 +35,7 @@ const initialLiveData = {
 
 const initialAppState = {
   cur:            'AUD',
+  view:           'currency',   // 'currency' | 'guide' | 'thesis'
   checkState:     {},
   journalEntries: [],
   settingsOpen:   false,
@@ -45,7 +46,10 @@ const initialAppState = {
 function reducer(state, action) {
   switch (action.type) {
     case 'SET_CURRENCY':
-      return { ...state, cur: action.payload };
+      return { ...state, cur: action.payload, view: 'currency' };
+
+    case 'SET_VIEW':
+      return { ...state, view: action.payload };
 
     case 'TOGGLE_CHECK': {
       const id = action.payload;
@@ -114,3 +118,4 @@ export function useAppState()   { return useContext(AppContext).state; }
 export function useDispatch()   { return useContext(AppContext).dispatch; }
 export function useLiveData()   { return useContext(AppContext).state.liveData; }
 export function useCurrentCcy() { return useContext(AppContext).state.cur; }
+export function useCurrentView(){ return useContext(AppContext).state.view; }
