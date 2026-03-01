@@ -72,7 +72,7 @@ function PositionSizer({ atrData }) {
         <div className="sz-inp" style={{ marginBottom: '0.4rem' }}>
           <label className="fld-lbl">PAIR</label>
           <select className="fld-sel" value={pair} onChange={e => setPair(e.target.value)}>
-            {Object.keys(ATR).map(p => <option key={p}>{p}</option>)}
+            {Object.keys(STATIC_ATR).map(p => <option key={p}>{p}</option>)}
           </select>
         </div>
       </div>
