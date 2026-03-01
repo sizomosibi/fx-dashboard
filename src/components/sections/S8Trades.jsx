@@ -203,9 +203,26 @@ export function S8Trades({ d, brief, matrixEnrich }) {
       {/* Static fallback from scores.js when AI unavailable */}
       {!isLoading && !isAI && (
         pairs.length > 0
-          ? pairs.map(({ ccy: otherCcy, thesis }) => (
-              <TradeCard key={otherCcy} cur={cur} otherCcy={otherCcy} thesis={thesis} />
-            ))
+          ? <>
+              <div style={{
+                padding: '0.5rem 0.75rem',
+                marginBottom: '0.5rem',
+                background: 'rgba(184,147,62,0.06)',
+                border: '1px solid rgba(184,147,62,0.3)',
+                borderLeft: '3px solid var(--gold)',
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.72rem',
+                color: 'var(--gold2)',
+                lineHeight: 1.5,
+              }}>
+                ⚠ STATIC FALLBACK — AI brief unavailable. Entry/target/stop levels and catalysts
+                reflect late-February baseline data. Use §2 REFRESH or §9 AI Analyst to get
+                current levels before trading.
+              </div>
+              {pairs.map(({ ccy: otherCcy, thesis }) => (
+                <TradeCard key={otherCcy} cur={cur} otherCcy={otherCcy} thesis={thesis} />
+              ))}
+            </>
           : <Card><div style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>No trade thesis data available for this currency.</div></Card>
       )}
     </>

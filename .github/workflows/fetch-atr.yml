@@ -1,0 +1,41 @@
+name: Fetch ATR Data
+
+on:
+  # Weekly on Saturday 06:30 UTC — before week opens in Asia
+  schedule:
+    - cron: '30 6 * * 6'
+
+  # On every push to main — ensures fresh ATR after any code deploy
+  push:
+    branches: [main]
+
+  # Manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  fetch-atr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch ATR data (14-day, all G10 pairs)
+        run: python scripts/fetch_atr.py
+
+      - name: Commit atr-data.json if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/atr-data.json
+          git diff --cached --quiet || git commit -m "chore: update atr-data.json [skip ci]"
+          git push

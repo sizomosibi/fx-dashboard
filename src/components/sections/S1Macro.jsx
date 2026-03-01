@@ -5,20 +5,68 @@ import { MARKET_SNAPSHOT } from '../../data/marketSnapshot.js';
 import { COPPER_ANALYSIS } from '../../data/scores.js';
 import { CURRENCIES } from '../../data/currencies.js';
 
-// ── Static structural data ─────────────────────────────────────────
-const CARRY_PAIRS = [
-  { pair: 'AUD/JPY', spread: '3.60%', status: 'at risk',   note: 'BoJ hiking compresses spread' },
-  { pair: 'NZD/JPY', spread: '3.25%', status: 'unwinding', note: 'RBNZ cuts + BoJ hikes = maximum compression' },
-  { pair: 'GBP/JPY', spread: '4.00%', status: 'stable',    note: 'BoE constrained — spread holds for now' },
-  { pair: 'EUR/CHF', spread: '2.40%', status: 'stable',    note: 'SNB near zero; ECB cutting narrows spread' },
+// ── CB Group metadata — colors and descriptions per policy stance ──
+// ccys are auto-derived from each currency's `cbGroup` field in currencies.js.
+// To move a currency between groups, update its cbGroup field and this auto-derives.
+const CB_GROUP_META = {
+  'HIKING':               { color: 'var(--teal)', desc: 'Raising rates — inflation above target, tight labour market. Carry pairs vulnerable to compression.' },
+  'ON HOLD':              { color: 'var(--gold)', desc: 'Rates unchanged at restrictive levels. CB monitoring data before next pivot.' },
+  'CUTTING SLOWLY':       { color: '#b8690a',     desc: 'Cautious easing cycle underway. Inflation still elevated relative to target constrains pace.' },
+  'CUTTING AGGRESSIVELY': { color: 'var(--red)',  desc: 'Rapid easing — recession, weak growth, or approaching zero lower bound. Rate differentials compressing fast.' },
+};
+
+// Auto-derive groups from currencies.js cbGroup field.
+// S11 Update Assistant will update cbGroup when a CB pivots — this derives automatically.
+const CB_GROUPS = Object.entries(CB_GROUP_META)
+  .map(([grp, meta]) => ({
+    grp,
+    ...meta,
+    ccys: Object.entries(CURRENCIES)
+      .filter(([k, v]) => k !== 'XAU' && v.cbGroup === grp)
+      .map(([k]) => k),
+  }))
+  .filter(g => g.ccys.length > 0);
+
+// ── Carry pair auto-calculation ────────────────────────────────────
+// Spreads are computed from CURRENCIES.interestRate — which is kept current
+// by cb-rates.json (GitHub Actions weekly + on every push to main).
+// No manual maintenance required — rates drive spreads automatically.
+const CARRY_CONFIG = [
+  { pair: 'AUD/JPY', base: 'AUD', quote: 'JPY' },
+  { pair: 'NZD/JPY', base: 'NZD', quote: 'JPY' },
+  { pair: 'GBP/JPY', base: 'GBP', quote: 'JPY' },
+  { pair: 'EUR/CHF', base: 'EUR', quote: 'CHF' },
 ];
 
-const CB_GROUPS = [
-  { grp: 'HIKING',               ccys: ['JPY'],               color: 'var(--teal)', desc: 'BoJ raising rates for first time in decades. Carry unwind risk.' },
-  { grp: 'ON HOLD',              ccys: ['USD', 'GBP'],        color: 'var(--gold)', desc: 'Fed & BoE constrained. GBP by services inflation. USD by sticky CPI.' },
-  { grp: 'CUTTING SLOWLY',       ccys: ['AUD', 'EUR'],        color: '#b8690a',     desc: 'RBA cautious first cut. ECB easing toward neutral ~2%.' },
-  { grp: 'CUTTING AGGRESSIVELY', ccys: ['NZD', 'CAD', 'CHF'], color: 'var(--red)',  desc: 'RBNZ in recession cuts. BoC flagging tariff risk. SNB near zero.' },
-];
+function parseRate(rateStr = '') {
+  // Handle range '3.50–3.75%' → midpoint 3.625
+  const range = rateStr.match(/([\d.]+)[–\-]([\d.]+)/);
+  if (range) return (parseFloat(range[1]) + parseFloat(range[2])) / 2;
+  return parseFloat(rateStr) || 0;
+}
+
+function carryStatus(spread) {
+  if (spread < 1.5) return 'unwinding';
+  if (spread < 2.5) return 'compressing';
+  if (spread < 3.5) return 'at risk';
+  return 'stable';
+}
+
+const CARRY_PAIRS = CARRY_CONFIG.map(({ pair, base, quote }) => {
+  const baseRate  = parseRate(CURRENCIES[base]?.interestRate);
+  const quoteRate = parseRate(CURRENCIES[quote]?.interestRate);
+  const spread    = Math.max(0, +(baseRate - quoteRate).toFixed(2));
+  const bBias     = CURRENCIES[base]?.bias  || '';
+  const qBias     = CURRENCIES[quote]?.bias || '';
+  const bCBShort  = (CURRENCIES[base]?.centralBank  || base).split(' ')[0];
+  const qCBShort  = (CURRENCIES[quote]?.centralBank || quote).split(' ')[0];
+  return {
+    pair,
+    spread: `${spread.toFixed(2)}%`,
+    status: carryStatus(spread),
+    note: `${bCBShort} ${bBias} (${CURRENCIES[base]?.interestRate}) vs ${qCBShort} ${qBias} (${CURRENCIES[quote]?.interestRate})`,
+  };
+});
 
 const SPEECH_SCENARIOS = [
   { type: 'hawk', label: 'HAWKISH READ',  sub: '10Y rises in 1H',        chain: ['10Y Yield ↑', 'Fed holding longer', 'USD bid', 'Gold dips', 'AUD/NZD/CAD sell', 'USD/JPY rises'] },

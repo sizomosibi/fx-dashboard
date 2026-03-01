@@ -73,7 +73,18 @@ export async function fetchCOT() {
   return { cot, cotAsOf: asOf || null };
 }
 
-// ── Economic Calendar — /api/calendar proxy (ForexFactory) ─────────
+// ── ATR (Average True Range) — /atr-data.json (static, GitHub Actions) ──
+// public/atr-data.json is committed by GitHub Actions every Saturday via
+// scripts/fetch_atr.py, which calculates 14-day ATR from Yahoo Finance OHLC
+// data. Also runs on every push to main. No proxy needed — same-origin static.
+// Used by §10 Position Sizer to validate stop-loss distance vs daily range.
+export async function fetchATR() {
+  const res = await fetch('/atr-data.json');
+  if (!res.ok) throw new Error(`atr-data.json HTTP ${res.status}`);
+  const { atr, fetchedAt, fallbackUsed } = await res.json();
+  if (!atr || Object.keys(atr).length === 0) throw new Error('No ATR data');
+  return { atr, atrFetchedAt: fetchedAt || null, atrFallbackUsed: fallbackUsed || [] };
+}
 export async function fetchCalendar() {
   const res = await fetch('/api/calendar');
   if (!res.ok) throw new Error(`Calendar proxy HTTP ${res.status}`);

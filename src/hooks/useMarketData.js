@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useLiveData } from '../context/AppContext.jsx';
 import { MARKET_SNAPSHOT } from '../data/marketSnapshot.js';
+import { CURRENCIES } from '../data/currencies.js';
 
 // ── buildYield ─────────────────────────────────────────────────────
 // Merges a live yield value (raw %) over the static snapshot entry.
@@ -74,8 +75,11 @@ export function useMarketData() {
     const t5   = L.yields.US5Y  ?? parseFloat(B.yields.US5Y.v);
     const bp   = Math.round((t10 - t2) * 100);
 
-    // Real rate: 10Y nominal − CPI (use live US10Y if available)
-    const cpi      = 2.9; // best available; would need FRED for live
+    // Real rate: 10Y nominal − CPI
+    // Use live US10Y if available. CPI from USD triad data in currencies.js
+    // (updated monthly via §11 Update Assistant) — eliminates the stale magic number.
+    const usdCpiRaw = CURRENCIES.USD?.triad?.inf?.[0]?.v || '2.9%';
+    const cpi       = parseFloat(usdCpiRaw) || 2.9;
     const realRate  = +(t10 - cpi).toFixed(2);
     const realRateStatic = parseFloat(B.yields.realRate10Y.v);
     const rrChg    = +(realRate - realRateStatic).toFixed(2);

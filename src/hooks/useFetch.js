@@ -6,6 +6,7 @@ import {
   fetchMarkets,
   fetchCBRates,
   fetchCOT,
+  fetchATR,
   fetchCalendar,
   fetchNews,
 } from '../api/sources.js';
@@ -45,6 +46,10 @@ export function useFetch() {
       fetchCOT()
         .then(p => apply(p, 'cot', 'live'))
         .catch(e => console.warn('[COT]', e.message)),
+
+      fetchATR()
+        .then(p => apply(p, 'atr', 'live'))
+        .catch(e => console.warn('[ATR]', e.message)),
 
       fetchCalendar()
         .then(p => apply(p, 'calendar', 'live'))

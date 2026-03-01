@@ -1,8 +1,28 @@
 import { useState } from 'react';
 import { SectionHead } from '../ui/SectionHead.jsx';
 import { Card } from '../ui/Card.jsx';
-import { ATR, CORR_WARNS } from '../../data/scores.js';
-import { useAppState, useDispatch } from '../../context/AppContext.jsx';
+import { Dot } from '../ui/Dot.jsx';
+import { ATR as STATIC_ATR, CORR_WARNS } from '../../data/scores.js';
+import { useAppState, useDispatch, useLiveData } from '../../context/AppContext.jsx';
+
+// ── Merge live ATR (from /atr-data.json via GitHub Actions) over static baseline
+function useMergedATR() {
+  const live = useLiveData();
+  // live.atr is { 'EUR/USD': {atr:68, vol:'medium'}, ... } from atr-data.json
+  // STATIC_ATR is the hardcoded baseline in scores.js
+  const liveAtr = live.atr || {};
+  return {
+    data: Object.fromEntries(
+      Object.entries(STATIC_ATR).map(([pair, staticEntry]) => [
+        pair,
+        liveAtr[pair] ?? staticEntry,
+      ])
+    ),
+    src: live.status?.atr || 'stale',
+    fetchedAt: live.atrFetchedAt,
+    fallbackUsed: live.atrFallbackUsed || [],
+  };
+}
 
 const CHECKLIST = [
   { id: 'c1',  main: 'Fundamental thesis confirmed',      sub: 'CB bias, growth trend, risk sentiment all align' },
@@ -17,7 +37,7 @@ const CHECKLIST = [
   { id: 'c10', main: 'Weekly drawdown limit checked',     sub: 'Still within max weekly loss limit. Not trading on tilt.' },
 ];
 
-function PositionSizer() {
+function PositionSizer({ atrData }) {
   const [account,  setAccount]  = useState(10000);
   const [riskPct,  setRiskPct]  = useState(1);
   const [stopPips, setStopPips] = useState(80);
@@ -25,7 +45,7 @@ function PositionSizer() {
 
   const riskAmt = account * (riskPct / 100);
   const lots    = riskAmt / (stopPips * 10);
-  const atrD    = ATR[pair];
+  const atrD    = atrData[pair];
   const atrStop = atrD ? Math.round(atrD.atr * 1.25) : stopPips;
   const stopOk  = atrD ? stopPips >= atrD.atr : true;
   const rating  = riskPct <= 1 ? 'CONSERVATIVE ✓' : riskPct <= 2 ? 'MODERATE ✓' : 'AGGRESSIVE ⚠';
@@ -162,29 +182,53 @@ function TradeJournal() {
 }
 
 export function S10Exec() {
+  const { data: atrData, src: atrSrc, fetchedAt: atrTs, fallbackUsed } = useMergedATR();
+  const atrIsLive = atrSrc === 'live';
+
   return (
     <>
       <hr className="sec-rule" />
       <SectionHead num={10} title="Execution — Position Sizing, Risk Rules & Journal" />
 
       {/* ATR Grid */}
-      <Card label="VOLATILITY REFERENCE — 14-DAY ATR BY PAIR">
+      <Card label={
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          VOLATILITY REFERENCE — 14-DAY ATR BY PAIR
+          <Dot src={atrSrc} />
+          {atrIsLive && atrTs && (
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--teal)', letterSpacing: '0.06em' }}>
+              LIVE · {new Date(atrTs).toLocaleDateString('en-AU', { dateStyle: 'short' })}
+            </span>
+          )}
+          {!atrIsLive && (
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: '#555' }}>
+              BASELINE — updates weekly via GitHub Actions (fetch-atr.yml)
+            </span>
+          )}
+        </span>
+      }>
         <div style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.5, marginBottom: '0.6rem' }}>
           Set stop loss at <strong style={{ color: 'var(--ink)' }}>minimum 1× ATR</strong> from entry. A stop inside the ATR is not a risk level — it is a guaranteed loss.
         </div>
         <div className="atr-grid">
-          {Object.entries(ATR).map(([p, a]) => (
-            <div key={p} className="atr-cell">
-              <div className="atr-p">{p}</div>
-              <div className="atr-v">{a.atr}</div>
-              <div className="atr-u">pips (14d ATR)</div>
-              <div className={`atr-vl ${a.vol}`}>{a.vol.toUpperCase()} VOL</div>
-            </div>
-          ))}
+          {Object.entries(atrData).map(([p, a]) => {
+            const isFallback = fallbackUsed.includes(p);
+            return (
+              <div key={p} className="atr-cell">
+                <div className="atr-p">{p}</div>
+                <div className="atr-v">{a.atr}</div>
+                <div className="atr-u">pips (14d ATR)</div>
+                <div className={`atr-vl ${a.vol}`}>{a.vol.toUpperCase()} VOL</div>
+                {isFallback && (
+                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.58rem', color: '#555' }}>FALLBACK</div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </Card>
 
-      <PositionSizer />
+      <PositionSizer atrData={atrData} />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
         <PreTradeChecklist />

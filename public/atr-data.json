@@ -1,0 +1,14 @@
+{
+  "atr": {
+    "EUR/USD": { "atr": 68,  "vol": "medium" },
+    "GBP/USD": { "atr": 85,  "vol": "medium" },
+    "USD/JPY": { "atr": 112, "vol": "high"   },
+    "USD/CHF": { "atr": 58,  "vol": "low"    },
+    "USD/CAD": { "atr": 78,  "vol": "medium" },
+    "AUD/USD": { "atr": 52,  "vol": "low"    },
+    "NZD/USD": { "atr": 48,  "vol": "low"    },
+    "GBP/JPY": { "atr": 145, "vol": "high"   }
+  },
+  "fetchedAt": "2026-03-01T06:30:00+00:00",
+  "fallbackUsed": []
+}

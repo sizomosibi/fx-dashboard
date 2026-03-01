@@ -6,14 +6,18 @@ AUD:{name:'AUD',full:'Australian Dollar',flag:'🇦🇺',country:'Australia',
 centralBank:'Reserve Bank of Australia (RBA)',interestRate:'3.85%',
 ratePath:['3.60%','3.85%','4.10%','3.85%'],ratePathLabels:['Aug 25','Feb 26','May 26','Dec 26'],
 rateChange:'+0.25%',bias:'hawkish',
+cbGroup:'HIKING',
+score:{monetary:3,growth:-1,inflation:2,risk:-1,commodity:-1},
+currentAccount:{value:'-1.2%',trend:'improving',note:'Chronic CA deficit narrowing as commodity export revenues rise. Not a primary AUD driver currently.'},
+nextMeetingPricing:{date:'Mar 17-18, 2026',consensus:'Hold at 3.85%',prob:'Hold 80%, Hike May 60% if Q1 CPI >3%',note:'All 4 major banks expect March hold. May meeting is live — Q1 CPI (late April) is the key data point.'},
 triad:{
-  inf:[{n:'CPI (Headline)',v:'2.4%',c:'-0.3%',d:'down'},{n:'CPI (Trimmed Mean)',v:'2.7%',c:'-0.2%',d:'down'},{n:'PPI YoY',v:'1.8%',c:'-0.1%',d:'down'}],
-  gro:[{n:'GDP YoY',v:'0.8%',c:'+0.2%',d:'up'},{n:'Retail Sales MoM',v:'-0.1%',c:'-0.4%',d:'down'},{n:'PMI Composite',v:'50.2',c:'+0.4',d:'up'}],
-  emp:[{n:'Unemployment',v:'4.0%',c:'+0.1%',d:'down'},{n:'Participation',v:'66.8%',c:'0.0%',d:'up'},{n:'Wage Growth YoY',v:'3.2%',c:'-0.1%',d:'down'}],
+  inf:[{n:'CPI (Headline)',v:'3.2%',c:'+0.8%',d:'up'},{n:'CPI (Trimmed Mean)',v:'3.4%',c:'+0.7%',d:'up'},{n:'PPI YoY',v:'1.8%',c:'-0.1%',d:'down'}],
+  gro:[{n:'GDP YoY',v:'0.8%',c:'+0.2%',d:'up'},{n:'Private Demand QoQ',v:'+1.2%',c:'+0.8%',d:'up'},{n:'PMI Composite',v:'50.2',c:'+0.4',d:'up'}],
+  emp:[{n:'Unemployment',v:'4.0%',c:'+0.1%',d:'up'},{n:'Participation',v:'66.8%',c:'0.0%',d:'flat'},{n:'Wage Growth YoY',v:'3.2%',c:'-0.1%',d:'down'}],
 },
-cbSpeeches:[{speaker:'Gov. Michele Bullock',date:'Feb 18, 2026',
-  text:'The Board remains cautious. While inflation has moderated, we need sustained evidence before further easing. Domestic demand remains resilient but global uncertainty warrants vigilance.',
-  implication:'RBA in wait-and-see mode after first cut. Markets pricing ~2 more cuts in 2026. Rate differential vs USD widens if Fed holds. AUD headwinds from China commodity demand weakness compound the policy divergence.'}],
+cbSpeeches:[{speaker:'Gov. Michele Bullock',date:'Feb 3, 2026',
+  text:'The Board decided to increase the cash rate target to 3.85%. Inflation picked up materially in H2 2025. Growth in private demand has strengthened substantially more than expected and capacity pressures have increased.',
+  implication:'RBA has HIKED — first hike since Nov 2023. Inflation above 2-3% target. May meeting live for second hike if Q1 CPI stays above 3%. AUD now supported by rate differential widening vs EUR/NZD/CAD. Hawkish bias is structural until inflation returns to target.'}],
 partners:[
   {flag:'🇨🇳',name:'China',share:'31%',commodity:'Iron Ore, Coal, LNG',impact:'negative',note:'Manufacturing slowdown reducing commodity demand — primary AUD headwind'},
   {flag:'🇯🇵',name:'Japan',share:'12%',commodity:'Coal, LNG, Beef',impact:'neutral',note:'Stable demand; JPY weakness complicates pricing'},
@@ -29,27 +33,31 @@ commodities:[
   {icon:'🌾',name:'WHEAT',dir:'bullish',note:'Global supply tight'},
 ],
 weekAhead:[
-  {date:'Mon Feb 23',impact:'medium',event:'RBA Meeting Minutes',prior:'—',consensus:'—',trigger:'Watch for language shifts on inflation thresholds. Hawkish tone = AUD bid.'},
-  {date:'Wed Feb 25',impact:'high',event:'AU Trimmed Mean CPI QoQ',prior:'+0.6%',consensus:'+0.6%',trigger:'Above +0.8% = hawkish RBA surprise = AUD rally. Below +0.4% = more cuts = AUD bearish.'},
-  {date:'Thu Feb 26',impact:'high',event:'China NBS PMI Manufacturing',prior:'49.1',consensus:'49.9',trigger:'Above 50 = expansion = bullish AUD. Below 49 = contraction = AUD/USD -40-80 pips.'},
-  {date:'Fri Feb 27',impact:'medium',event:'AU Retail Sales MoM',prior:'-0.1%',consensus:'+0.3%',trigger:'Another miss = more cuts, AUD lower. Beat = short-covering only.'},
+  {date:'Mon Mar 3',impact:'medium',event:'China NBS Manufacturing PMI',prior:'50.1',consensus:'49.9',trigger:'Below 50 = China contraction = iron ore demand falls = AUD bearish. Above 50.5 = recovery = AUD bid.'},
+  {date:'Tue Mar 4',impact:'high',event:'RBA Board Meeting Minutes',prior:'—',consensus:'—',trigger:'Key insight into hike conviction: unanimous vs split vote. Any mention of second hike = AUD rally. Dovish dissent = AUD sold.'},
+  {date:'Wed Mar 5',impact:'high',event:'Australia Q4 GDP Release',prior:'+0.3% QoQ',consensus:'+0.4% QoQ',trigger:'Beat = RBA hike path confirmed = AUD bid. Miss below +0.2% = growth concern = AUD weakness despite hike.'},
+  {date:'Fri Mar 7',impact:'medium',event:'Australia Trade Balance',prior:'+$5.2B',consensus:'+$5.5B',trigger:'Wide surplus = commodity export strength = AUD positive. Narrowing = China demand weakness signal.'},
 ],
 geopolitical:[
-  {title:'China stimulus uncertainty — property sector restructuring ongoing',effect:'bearish',analysis:'Weaker property market → reduced steel demand → lower iron ore imports → direct AUD selling pressure. Monitor PBOC announcements and NBS PMI closely.'},
-  {title:'US tariff threats on Southeast Asian goods',effect:'mixed',analysis:'Short-term uncertainty is risk-off = AUD bearish. Possible longer-term manufacturing redirection benefit.'},
-  {title:'India infrastructure push accelerating coal and iron ore demand',effect:'bullish',analysis:'India\'s capex-driven growth becoming secondary commodity demand driver. Partially offsets China weakness.'},
+  {title:'China stimulus uncertainty — property sector restructuring, PBOC easing cycle',effect:'bearish',analysis:'Weaker property market reducing steel/iron ore demand. PBOC cutting rates but property drag structural. Primary AUD headwind. Monitor China NBS PMI monthly.'},
+  {title:'RBA potential May 2026 hike — Q1 CPI is the deciding data release',effect:'bullish',analysis:'If Q1 CPI (late April) prints above 3%, markets will price a second hike. AUD would rally sharply on hike confirmation. This is the dominant near-term AUD catalyst.'},
+  {title:'India infrastructure push accelerating coal and iron ore demand',effect:'bullish',analysis:'India capex-driven growth becoming secondary commodity demand driver. Partially offsets China weakness. AUD increasingly finds support from India demand.'},
 ],
-surpriseIndex:-8,
+surpriseIndex:18,
 chains:[
-  ['China Growth ↓','Iron Ore Demand ↓','AUD Export Revenue ↓','AUD/USD ↓'],
-  ['RBA Cuts Rates','Rate Differential Widens','Capital Outflows','AUD Weakens'],
-  ['China Stimulus ↑','Commodity Demand ↑','Export Revenue ↑','AUD/USD ↑'],
+  ['Q1 CPI >3%','RBA Hikes Again May','Rate Differential Widens','AUD/USD ↑'],
+  ['China PMI <49','Iron Ore Demand ↓','Export Revenue ↓','AUD/USD ↓'],
+  ['Global Risk-Off','Commodity Selloff','AUD Sold as Proxy','AUD/USD ↓'],
 ]},
 
 USD:{name:'USD',full:'US Dollar',flag:'🇺🇸',country:'United States',
 centralBank:'Federal Reserve (Fed)',interestRate:'3.50–3.75%',
 ratePath:['4.25–4.50%','3.50–3.75%','3.50%','3.25%'],ratePathLabels:['Dec 24','Jan 26','Jun 26','Dec 26'],
 rateChange:'-0.25%',bias:'neutral',
+cbGroup:'ON HOLD',
+score:{monetary:4,growth:3,inflation:2,risk:2,commodity:1},
+nextMeetingPricing:{date:'Mar 18-19, 2026',consensus:'Hold at 3.50–3.75%',prob:'Hold 96%, Cut Jun 78% (market pricing ~2 cuts in 2026)',note:'Near-zero probability of action. Market watching dot plot update — if median moves to 1 cut from 2, USD rallies sharply. Stagflation scenario (CPI + weak NFP) is the tail risk.'},
+currentAccount:{value:'-3.1%',trend:'widening',note:'Chronic US CA deficit widening under tariff policy. Structural USD negative long-term, but capital account dominates near-term — USD still bid on yield differential.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.9%',c:'+0.1%',d:'up'},{n:'Core PCE YoY',v:'2.6%',c:'0.0%',d:'up'},{n:'PPI YoY',v:'3.5%',c:'+0.3%',d:'up'}],
   gro:[{n:'GDP YoY',v:'2.3%',c:'-0.3%',d:'down'},{n:'Retail Sales MoM',v:'+0.4%',c:'-0.2%',d:'down'},{n:'ISM Services',v:'52.8',c:'-1.5',d:'down'}],
@@ -57,7 +65,7 @@ triad:{
 },
 cbSpeeches:[{speaker:'Chair Jerome Powell',date:'Feb 12, 2026',
   text:'We do not need to be in a hurry to adjust our policy stance. Inflation progress has been uneven. The labour market remains solid, though we see some moderation.',
-  implication:'Classic higher-for-longer signal. Markets pricing 1-2 cuts in 2026. USD supported by rate differential. Core PCE Thu Feb 26 is the next key trigger for Fed path repricing.'}],
+  implication:'Classic higher-for-longer signal. Markets pricing 1-2 cuts in 2026. USD supported by rate differential. Next key triggers: March CPI release and FOMC March 18-19 meeting — any shift in dot plots reprices the entire rate path.'}],
 partners:[
   {flag:'🇲🇽',name:'Mexico',share:'16%',commodity:'Manufactured Goods',impact:'negative',note:'Tariff threats at 25% rising — direct inflation pass-through risk'},
   {flag:'🇨🇦',name:'Canada',share:'14%',commodity:'Oil, Auto Parts',impact:'neutral',note:'USMCA tensions emerging'},
@@ -73,10 +81,10 @@ commodities:[
   {icon:'💻',name:'TECH',dir:'bullish',note:'AI exports booming'},
 ],
 weekAhead:[
-  {date:'Tue Feb 24',impact:'high',event:'CB Consumer Confidence',prior:'105.3',consensus:'102.5',trigger:'Below 98 = recession fears = dovish Fed bets. Above 106 = USD bullish.'},
-  {date:'Wed Feb 25',impact:'high',event:'FOMC Meeting Minutes',prior:'—',consensus:'—',trigger:'Dissent or dovish language = USD selloff. Hawkish unanimity = USD strength.'},
-  {date:'Thu Feb 26',impact:'high',event:'Core PCE MoM',prior:'+0.2%',consensus:'+0.3%',trigger:'Above +0.4% = hawkish repricing = USD bid. Below +0.2% = USD selloff.'},
-  {date:'Fri Feb 27',impact:'medium',event:'UMich Sentiment (Final)',prior:'71.1',consensus:'71.8',trigger:'5yr inflation expectations component most watched. Rising = Fed cannot cut = USD positive.'},
+  {date:'Mon Mar 3',impact:'high',event:'ISM Manufacturing PMI',prior:'50.9',consensus:'50.5',trigger:'Below 50 = contraction = dovish Fed bets. Above 52 = expansion = USD bid.'},
+  {date:'Wed Mar 5',impact:'medium',event:'ADP Employment Change',prior:'183K',consensus:'160K',trigger:'Major miss = NFP fear = USD weakness. Strong beat = labour market tight = USD bid.'},
+  {date:'Thu Mar 6',impact:'high',event:'Weekly Jobless Claims',prior:'217K',consensus:'219K',trigger:'Above 250K = labour softening = dovish pivot bets = USD weakness.'},
+  {date:'Fri Mar 7',impact:'high',event:'Nonfarm Payrolls',prior:'143K',consensus:'165K',trigger:'Below 100K = Fed cuts sooner = USD selloff. Above 200K = tightening stays = USD rally.'}
 ],
 geopolitical:[
   {title:'Trade tariff escalation — 25% tariffs on Canada/Mexico under consideration',effect:'mixed',analysis:'Short term: USD safe-haven bid. Medium term: stagflation risk (higher import prices + lower growth). Mixed signal.'},
@@ -93,6 +101,10 @@ EUR:{name:'EUR',full:'Euro',flag:'🇪🇺',country:'Eurozone',
 centralBank:'European Central Bank (ECB)',interestRate:'2.15%',
 ratePath:['2.40%','2.15%','1.90%','1.65%'],ratePathLabels:['Mar 25','Jun 25','Jun 26','Dec 26'],
 rateChange:'-0.25%',bias:'dovish',
+cbGroup:'CUTTING SLOWLY',
+score:{monetary:-3,growth:-2,inflation:-1,risk:-1,commodity:-1},
+nextMeetingPricing:{date:'Mar 6, 2026 (THIS WEEK)',consensus:'Cut 25bp to 1.90%',prob:'Cut 25bp 82%, Cut 50bp 12%, Hold 6%',note:'Market has this meeting fully priced. EUR reaction will come from Lagarde\'s press conference — pace of future cuts and whether she references the neutral rate (~2%) as the floor. A neutral-rate pause signal = EUR rally.'},
+currentAccount:{value:'+2.3%',trend:'improving',note:'Eurozone CA surplus driven by goods export strength and lower energy import costs since 2023. EUR structurally supported by CA but overwhelmed by rate differential widening vs USD.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.5%',c:'-0.2%',d:'down'},{n:'Core CPI',v:'2.7%',c:'-0.1%',d:'down'},{n:'PPI YoY',v:'-1.1%',c:'+0.2%',d:'up'}],
   gro:[{n:'GDP YoY',v:'0.9%',c:'+0.2%',d:'up'},{n:'German PMI Mfg',v:'46.5',c:'+0.3',d:'up'},{n:'PMI Composite',v:'50.3',c:'+1.1',d:'up'}],
@@ -114,9 +126,9 @@ commodities:[
   {icon:'🚗',name:'AUTOS',dir:'bearish',note:'China EV competition'},
 ],
 weekAhead:[
-  {date:'Mon Feb 23',impact:'high',event:'German Ifo Business Climate',prior:'85.1',consensus:'85.5',trigger:'Below 84 = EUR bearish. Above 87 = EUR relief rally.'},
-  {date:'Wed Feb 25',impact:'medium',event:'ECB Wage Tracker Q4',prior:'+4.8%',consensus:'+4.5%',trigger:'High wages = sticky services = slower ECB cuts = EUR support.'},
-  {date:'Fri Feb 27',impact:'high',event:'Eurozone CPI Flash YoY',prior:'2.5%',consensus:'2.3%',trigger:'Below 2.2% = March ECB cut locked in = EUR lower. Above 2.6% = EUR squeeze.'},
+  {date:'Mon Mar 3',impact:'medium',event:'Eurozone Manufacturing PMI',prior:'46.6',consensus:'47.0',trigger:'Below 45 = deep contraction = ECB accelerates cuts. Above 50 = stabilisation = EUR relief.'},
+  {date:'Thu Mar 6',impact:'high',event:'ECB Rate Decision',prior:'2.15%',consensus:'2.00% cut',trigger:'50bp cut = EUR sell. 25bp as expected = priced in. Hold = EUR rally. Forward guidance on pace is key.'},
+  {date:'Thu Mar 6',impact:'high',event:'ECB Press Conference (Lagarde)',prior:'—',consensus:'—',trigger:'Tone on pace of future cuts: "meeting by meeting" = less EUR bearish. "Multiple cuts ahead" = EUR sell.'}
 ],
 geopolitical:[
   {title:'Russia-Ukraine ceasefire negotiations underway',effect:'bullish',analysis:'Potential ceasefire = energy prices ease = EUR cost-push inflation falls = European growth recovery. EUR/USD bullish on resolution.'},
@@ -132,6 +144,10 @@ GBP:{name:'GBP',full:'British Pound Sterling',flag:'🇬🇧',country:'United Ki
 centralBank:'Bank of England (BoE)',interestRate:'3.75%',
 ratePath:['4.00%','3.75%','3.50%','3.25%'],ratePathLabels:['Nov 25','Dec 25','May 26','Aug 26'],
 rateChange:'-0.25%',bias:'dovish',
+cbGroup:'CUTTING SLOWLY',
+score:{monetary:-1,growth:1,inflation:2,risk:0,commodity:1},
+nextMeetingPricing:{date:'Mar 20, 2026',consensus:'Hold at 3.75%',prob:'Hold 76%, Cut 24% — Services CPI at 5% is the constraint',note:'Bailey\'s Feb 6 message was explicitly hawkish-cut. Services inflation at 5% prevents consecutive moves. UK CPI (mid-March) is the deciding data release — if services stays above 5%, hold is near-certain. GBP/EUR supported by hold vs ECB cut this week.'},
+currentAccount:{value:'-3.4%',trend:'stable',note:'UK CA deficit persistent but financed by financial services surplus. City of London capital inflows partial offset. Not a primary GBP driver near-term.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'3.0%',c:'+0.2%',d:'up'},{n:'Services CPI',v:'5.0%',c:'0.0%',d:'up'},{n:'Core CPI',v:'3.7%',c:'+0.1%',d:'up'}],
   gro:[{n:'GDP MoM',v:'+0.4%',c:'+0.2%',d:'up'},{n:'PMI Composite',v:'50.5',c:'+0.3',d:'up'},{n:'Industrial Prod.',v:'+0.3%',c:'+0.5%',d:'up'}],
@@ -139,7 +155,7 @@ triad:{
 },
 cbSpeeches:[{speaker:'Governor Andrew Bailey',date:'Feb 6, 2026',
   text:'Services inflation remains too high at 5%. We cut rates today but we are not on a pre-set path. We need to see wage growth moderate before committing to further easing.',
-  implication:'Hawkish cut — BoE constrained by services inflation. GBP supported vs ECB peers on rate path divergence. UK Services CPI Tue Feb 24 is the single most important data point this week.'}],
+  implication:'Hawkish cut — BoE constrained by services inflation at 5.0%. GBP supported vs ECB peers on rate path divergence. Watch UK CPI (mid-month) and BoE March 20 decision — if services stays above 5%, another cut this quarter is unlikely. GBP/EUR supported on hold vs ECB cut differential.'}],
 partners:[
   {flag:'🇪🇺',name:'European Union',share:'42%',commodity:'Services, Goods',impact:'neutral',note:'Largest partner; post-Brexit friction persisting'},
   {flag:'🇺🇸',name:'United States',share:'15%',commodity:'Finance, Services',impact:'positive',note:'Potential UK-US trade deal talks — GBP upside catalyst'},
@@ -151,9 +167,8 @@ commodities:[
   {icon:'⚗️',name:'PHARMA',dir:'bullish',note:'Major global exporter'},
 ],
 weekAhead:[
-  {date:'Tue Feb 24',impact:'high',event:'UK CPI YoY',prior:'3.0%',consensus:'2.8%',trigger:'Above 3.0% = BoE on hold = GBP rally. Below 2.6% = cut bets rise = GBP bearish.'},
-  {date:'Tue Feb 24',impact:'high',event:'UK Services CPI',prior:'5.0%',consensus:'4.9%',trigger:'Above 5.0% = hawkish = GBP strong. Below 4.5% = cuts priced = GBP falls significantly.'},
-  {date:'Fri Feb 27',impact:'medium',event:'UK Retail Sales MoM',prior:'-0.3%',consensus:'+0.3%',trigger:'Negative surprise = consumer weakness = dovish BoE = GBP bearish.'},
+  {date:'Mon Mar 3',impact:'medium',event:'UK Manufacturing PMI',prior:'48.3',consensus:'48.5',trigger:'Below 45 = contraction deepening = BoE cuts sooner. Above 50 = surprise = GBP bid.'},
+  {date:'Wed Mar 5',impact:'medium',event:'UK Construction PMI',prior:'50.3',consensus:'50.0',trigger:'Moderate impact. Sustained above 50 = UK economy stabilising = GBP supported.'}
 ],
 geopolitical:[
   {title:'UK-EU trade relationship review — financial services access discussions',effect:'bullish',analysis:'Any improvement in EU market access = GBP positive. Financial services are 12% of UK GDP.'},
@@ -168,6 +183,10 @@ JPY:{name:'JPY',full:'Japanese Yen',flag:'🇯🇵',country:'Japan',
 centralBank:'Bank of Japan (BoJ)',interestRate:'0.75%',
 ratePath:['0.50%','0.75%','1.00%','1.25%'],ratePathLabels:['Sep 25','Dec 25','Jun 26','Dec 26'],
 rateChange:'+0.25%',bias:'hawkish',
+cbGroup:'HIKING',
+score:{monetary:3,growth:-1,inflation:2,risk:3,commodity:-1},
+nextMeetingPricing:{date:'Mar 19, 2026',consensus:'Hold at 0.75%',prob:'Hold 74%, Hike 26% — dependent on shunto final results (due Mar-Apr)',note:'Ueda has made shunto wage outcome the explicit trigger. If March preliminary results show 4%+ nationally, a May hike becomes 70%+ probable. Forward guidance language on March 19 will move USD/JPY 150-200 pips regardless of the rate decision itself.'},
+currentAccount:{value:'+3.9%',trend:'stable',note:'Large Japan CA surplus driven by income from overseas investments (primary income surplus). This is the structural JPY support floor — why JPY eventually returns regardless of carry flows. Repatriation flows in risk-off events amplify JPY strengthening.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'3.6%',c:'+0.2%',d:'up'},{n:'Core CPI (ex-food)',v:'3.1%',c:'+0.1%',d:'up'},{n:'PPI YoY',v:'4.2%',c:'+0.3%',d:'up'}],
   gro:[{n:'GDP QoQ',v:'-0.2%',c:'-0.5%',d:'down'},{n:'Retail Sales YoY',v:'+3.7%',c:'+0.1%',d:'up'},{n:'Industrial Prod.',v:'-0.2%',c:'-0.5%',d:'down'}],
@@ -187,9 +206,8 @@ commodities:[
   {icon:'🚗',name:'AUTOS',dir:'neutral',note:'Tariff risk emerging from US'},
 ],
 weekAhead:[
-  {date:'Mon Feb 23',impact:'high',event:'Japan CPI Nationwide YoY',prior:'3.4%',consensus:'3.4%',trigger:'Above 3.5% = BoJ hike closer = JPY surges, carry unwind. Below 3.0% = BoJ patience = USD/JPY bounce.'},
-  {date:'Thu Feb 26',impact:'high',event:'Tokyo CPI YoY (Lead indicator)',prior:'2.9%',consensus:'2.8%',trigger:'Above 3.2% = BoJ hike accelerates = JPY surge. Below 2.4% = BoJ patience.'},
-  {date:'Fri Feb 27',impact:'medium',event:'Industrial Production MoM',prior:'-0.2%',consensus:'+1.5%',trigger:'Strong data supports BoJ optimism = JPY positive.'},
+  {date:'Mon Mar 3',impact:'medium',event:'Japan Manufacturing PMI Final',prior:'48.7',consensus:'48.9',trigger:'Sustained below 50 = industrial weakness = BoJ caution on hike pace.'},
+  {date:'Wed Mar 5',impact:'medium',event:'Japan Labour Cash Earnings YoY',prior:'+4.8%',consensus:'+4.5%',trigger:'Above 4.5% = shunto momentum = BoJ hike pressure = JPY bid. Below 3.5% = BoJ pauses.'}
 ],
 geopolitical:[
   {title:'JPY as global safe-haven — geopolitical tensions trigger carry unwind',effect:'bullish',analysis:'In any global risk-off event, carry trades (sell JPY) unwind explosively. JPY can strengthen 3-5% in hours during crises.'},
@@ -206,6 +224,10 @@ CHF:{name:'CHF',full:'Swiss Franc',flag:'🇨🇭',country:'Switzerland',
 centralBank:'Swiss National Bank (SNB)',interestRate:'0.00%',
 ratePath:['0.25%','0.00%','-0.25%','-0.25%'],ratePathLabels:['Mar 25','Jun 25','Dec 26','Jun 27'],
 rateChange:'-0.25%',bias:'dovish',
+cbGroup:'CUTTING AGGRESSIVELY',
+score:{monetary:-2,growth:1,inflation:-2,risk:3,commodity:1},
+nextMeetingPricing:{date:'Mar 20, 2026',consensus:'Hold at 0.00%',prob:'Hold 65%, Cut to -0.25% 35% — deflation risk is the trigger',note:'CPI at 0.4% means SNB has minimal room before deflation. Schlegel explicitly flagged negative rates as possible if CHF appreciates sharply. Market is pricing a coin-flip for a cut by Jun 2026. Key catalyst: EUR/CHF level — if it falls below 0.93, SNB will intervene verbally.'},
+currentAccount:{value:'+7.8%',trend:'stable',note:'Switzerland runs one of the largest CA surpluses globally (pharma, watches, finance). CHF is structurally undervalued by this measure. SNB maintains FX reserve interventions to prevent excessive CHF appreciation.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'0.4%',c:'-0.1%',d:'down'},{n:'Core CPI',v:'0.7%',c:'-0.1%',d:'down'},{n:'PPI YoY',v:'-2.1%',c:'+0.2%',d:'up'}],
   gro:[{n:'GDP YoY',v:'1.4%',c:'+0.2%',d:'up'},{n:'PMI Composite',v:'49.8',c:'+0.4',d:'up'},{n:'KOF Leading',v:'103.1',c:'+2.3',d:'up'}],
@@ -225,8 +247,8 @@ commodities:[
   {icon:'🏦',name:'FINANCE',dir:'bullish',note:'Global safe-haven flows'},
 ],
 weekAhead:[
-  {date:'Wed Feb 25',impact:'medium',event:'Swiss GDP Q4 2025 QoQ',prior:'+0.2%',consensus:'+0.3%',trigger:'Below 0% = SNB cut pressure grows = CHF bearish (outside crisis).'},
-  {date:'Thu Feb 26',impact:'low',event:'SNB Chairman Schlegel Speech',prior:'—',consensus:'—',trigger:'FX intervention language: "monitoring FX" = SNB intervention risk on CHF strength.'},
+  {date:'Mon Mar 3',impact:'low',event:'Switzerland Manufacturing PMI',prior:'48.4',consensus:'48.0',trigger:'Below 45 = deep contraction = SNB considers further cuts. SNB quarterly meeting March 20.'},
+  {date:'Thu Mar 6',impact:'medium',event:'Switzerland CPI YoY',prior:'0.4%',consensus:'0.3%',trigger:'Below 0% = deflation risk = SNB may go negative. Above 1% = SNB comfortable at zero.'}
 ],
 geopolitical:[
   {title:'Global geopolitical crises — CHF primary European safe-haven',effect:'bullish',analysis:'EUR/CHF falls rapidly during European crises. Swiss neutrality and gold reserves (35% of CHF backing) = go-to European safe-haven regardless of SNB policy.'},
@@ -241,6 +263,10 @@ CAD:{name:'CAD',full:'Canadian Dollar',flag:'🇨🇦',country:'Canada',
 centralBank:'Bank of Canada (BoC)',interestRate:'2.25%',
 ratePath:['2.50%','2.25%','2.00%','1.75%'],ratePathLabels:['Sep 25','Oct 25','Mar 26','Jun 26'],
 rateChange:'-0.25%',bias:'dovish',
+cbGroup:'CUTTING AGGRESSIVELY',
+score:{monetary:-3,growth:-3,inflation:-2,risk:-1,commodity:-2},
+nextMeetingPricing:{date:'Mar 4, 2026 (THIS WEEK)',consensus:'Cut 25bp to 2.00%',prob:'Cut 25bp 64%, Cut 50bp 21%, Hold 15% — tariff outcome is the wildcard',note:'Macklem will almost certainly cut. The size depends on tariff news this week. A 50bp cut + explicit tariff recession warning = CAD crashes, USD/CAD tests 1.46. A 25bp cut with a balanced tone = priced in. A hold on surprise tariff delay = violent CAD short squeeze given -64% COT.'},
+currentAccount:{value:'-2.7%',trend:'widening',note:'Canada CA deficit widening as oil revenue falls (WTI below $75) and US trade uncertainty supresses investment. Tariff imposition would dramatically widen the deficit. Structural CAD negative.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'1.9%',c:'-0.3%',d:'down'},{n:'Core CPI',v:'2.3%',c:'-0.2%',d:'down'},{n:'PPI YoY',v:'1.2%',c:'-0.4%',d:'down'}],
   gro:[{n:'GDP MoM',v:'0.0%',c:'-0.2%',d:'down'},{n:'Retail Sales MoM',v:'-0.4%',c:'-0.8%',d:'down'},{n:'Ivey PMI',v:'47.2',c:'-1.3',d:'down'}],
@@ -261,9 +287,9 @@ commodities:[
   {icon:'🥇',name:'GOLD',dir:'bullish',note:'Canada top-5 producer'},
 ],
 weekAhead:[
-  {date:'Tue Feb 24',impact:'high',event:'Canada Retail Sales MoM',prior:'-0.4%',consensus:'+0.3%',trigger:'Another miss = USD/CAD pushes toward 1.46. Beat = short covering only.'},
-  {date:'Wed Feb 25',impact:'high',event:'US-Canada Trade Headlines',prior:'—',consensus:'—',trigger:'Tariff confirmation = immediate CAD selloff. Tariff delay/deal = violent CAD short squeeze.'},
-  {date:'Fri Feb 27',impact:'medium',event:'Canada GDP Monthly',prior:'0.0%',consensus:'+0.1%',trigger:'Negative print = recession talk = USD/CAD surge. Tariff headlines override any data this week.'},
+  {date:'Wed Mar 4',impact:'high',event:'Bank of Canada Rate Decision',prior:'2.25%',consensus:'2.00% expected',trigger:'50bp cut = CAD crash + tariff fear priced. 25bp = moderate CAD weakness. Hold = violent CAD short squeeze.'},
+  {date:'Wed Mar 4',impact:'high',event:'BoC Press Conference (Macklem)',prior:'—',consensus:'—',trigger:'Explicit tariff risk language = CAD bearish. Forward guidance on terminal rate is key.'},
+  {date:'Fri Mar 7',impact:'medium',event:'Canada Employment Change',prior:'-13K',consensus:'+20K',trigger:'Second consecutive miss = BoC emergency cuts = USD/CAD pushes to 1.47+. Beat = short squeeze.'}
 ],
 geopolitical:[
   {title:'US 25% tariff threat on Canadian goods — USMCA under severe pressure',effect:'bearish',analysis:'Most severe geopolitical risk for any G10 currency. 76% of exports go to US. Any tariff imposition = recession risk = aggressive BoC cuts = USD/CAD significantly higher.'},
@@ -280,6 +306,10 @@ NZD:{name:'NZD',full:'New Zealand Dollar',flag:'🇳🇿',country:'New Zealand',
 centralBank:'Reserve Bank of New Zealand (RBNZ)',interestRate:'2.25%',
 ratePath:['2.50%','2.25%','2.00%','1.75%'],ratePathLabels:['Oct 25','Nov 25','May 26','Aug 26'],
 rateChange:'-0.25%',bias:'dovish',
+cbGroup:'CUTTING AGGRESSIVELY',
+score:{monetary:-4,growth:-3,inflation:-2,risk:-2,commodity:-2},
+nextMeetingPricing:{date:'Apr 9, 2026',consensus:'Cut 25bp to 2.00%',prob:'Cut 25bp 72%, Cut 50bp 20%, Hold 8%',note:'Orr set the destination explicitly — neutral rate ~3% by mid-year. Already at 2.25%, so one more 25bp cut likely takes them to 2.00% and potentially done for H1. Any upside NZ data surprise (employment, CPI beat) could see market pricing a hold = violent NZD short squeeze given -55% COT.'},
+currentAccount:{value:'-6.7%',trend:'improving',note:'New Zealand has one of the largest CA deficits in the G10 as a % of GDP. Historically a structural NZD negative. Dairy export improvement would narrow it, but recovery is slow. Requires external financing = currency vulnerability.'},
 triad:{
   inf:[{n:'CPI (Headline)',v:'2.2%',c:'-0.5%',d:'down'},{n:'Non-Tradeable CPI',v:'4.5%',c:'-0.3%',d:'down'},{n:'PPI Input',v:'1.1%',c:'-0.6%',d:'down'}],
   gro:[{n:'GDP QoQ',v:'-0.2%',c:'-0.4%',d:'down'},{n:'Retail Sales QoQ',v:'-0.8%',c:'-1.1%',d:'down'},{n:'Business Confidence',v:'-14',c:'-9',d:'down'}],
@@ -287,7 +317,7 @@ triad:{
 },
 cbSpeeches:[{speaker:'Governor Adrian Orr',date:'Feb 19, 2026',
   text:'We cut 50 basis points today. The New Zealand economy is in recession. Inflation is back within our band. The path is clearly lower for rates — we expect to reach neutral around 3% by mid-year.',
-  implication:'Most dovish G10 central bank. RBNZ has most room to cut. NZD structurally weakening. AUD/NZD pushes higher as RBA cuts less aggressively. NZD becoming funding currency — short squeeze risk on any positive surprise.'}],
+  implication:'Most dovish G10 central bank. RBNZ has most room to cut. NZD structurally weakening. AUD/NZD pushes higher as RBA is now hiking while RBNZ cuts — maximum divergence between two commodity currencies. NZD becoming carry funding currency — short squeeze risk on any positive surprise.'}],
 partners:[
   {flag:'🇨🇳',name:'China',share:'28%',commodity:'Dairy, Meat, Wool',impact:'negative',note:'Dairy demand soft — retail spending slow in China'},
   {flag:'🇦🇺',name:'Australia',share:'15%',commodity:'Goods, Services',impact:'neutral',note:'AUD/NZD key relative pair — RBA vs RBNZ divergence matters'},
@@ -301,9 +331,8 @@ commodities:[
   {icon:'🌲',name:'TIMBER',dir:'bearish',note:'China construction weak'},
 ],
 weekAhead:[
-  {date:'Wed Feb 25',impact:'high',event:'RBNZ Rate Decision',prior:'3.75%',consensus:'3.50%',trigger:'50bp cut = NZD crash -100+ pips. 25bp = NZD stable to slight dip. Hold = massive short squeeze.'},
-  {date:'Thu Feb 26',impact:'medium',event:'China Caixin PMI Manufacturing',prior:'50.5',consensus:'50.3',trigger:'Chinese manufacturing health = NZD commodity demand proxy.'},
-  {date:'Fri Feb 27',impact:'medium',event:'NZ Business Confidence',prior:'-14',consensus:'-10',trigger:'Further deterioration confirms recession narrative = NZD bearish.'},
+  {date:'Mon Mar 3',impact:'medium',event:'ANZ Commodity Price Index',prior:'-0.8%',consensus:'+0.5%',trigger:'Dairy and soft commodity prices — leading indicator for NZD/USD. Consecutive falls = NZD weak.'},
+  {date:'Wed Mar 5',impact:'low',event:'NZ Building Consents MoM',prior:'-0.5%',consensus:'+1.0%',trigger:'Moderate impact. Housing activity correlates with RBNZ rate sensitivity.'}
 ],
 geopolitical:[
   {title:"China economic slowdown — New Zealand's dairy market at risk",effect:'bearish',analysis:"China buys 28% of NZ exports, dominated by dairy. Any GDT auction weakness flows directly to NZD. Monitor GDT auctions every 2 weeks."},
@@ -346,7 +375,7 @@ goldFundamentals:[
 cbSpeeches:[{
   speaker:'Fed Chair Jerome Powell',date:'Feb 12, 2026',
   text:'We do not need to be in a hurry to adjust our policy stance. Inflation progress has been uneven.',
-  implication:'Gold interpretation: Powell hawkish hold = USD firm = mild gold headwind. BUT: if inflation picks back up while Fed holds, real rates (10Y − CPI) could fall, which is historically the strongest bullish signal for gold. Watch Core PCE Thu Feb 26 — if above +0.4% MoM while Fed holds, gold could surge paradoxically as stagflation risk rises.'}],
+  implication:'Gold interpretation: Powell hawkish hold = USD firm = mild gold headwind. BUT: if inflation picks back up while Fed holds, real rates (10Y − CPI) could fall, which is historically the strongest bullish signal for gold. Watch March CPI release and FOMC March 18-19 — if inflation resurges while Fed holds, stagflation risk = gold surges paradoxically despite a stronger USD narrative.'}],
 triad:{
   inf:[{n:'US CPI YoY',v:'2.9%',c:'+0.1%',d:'up'},{n:'Core PCE YoY',v:'2.6%',c:'0.0%',d:'up'},{n:'Real Rate (10Y−CPI)',v:'+0.30%',c:'-0.15%',d:'down'}],
   gro:[{n:'Spot Price XAU/USD',v:'$2,935',c:'+$18',d:'up'},{n:'50-Day MA',v:'$2,780',c:'Below',d:'up'},{n:'200-Day MA',v:'$2,580',c:'Below',d:'up'}],
@@ -365,10 +394,10 @@ commodities:[
   {icon:'🔋',name:'COPPER',dir:'neutral',note:'China PMI key — growth proxy'},
 ],
 weekAhead:[
-  {date:'Tue Feb 24',impact:'high',event:'US CB Consumer Confidence',prior:'105.3',consensus:'102.5',trigger:'Below 98 = recession fear = safe-haven gold bid. Above 106 = risk-on = gold dip.'},
-  {date:'Thu Feb 26',impact:'high',event:'US Core PCE MoM (KEY)',prior:'+0.2%',consensus:'+0.3%',trigger:'Above +0.4% = stagflation signal = gold surges. Below +0.2% = disinflation = gold pressure. Most important release for gold this week.'},
-  {date:'Wed Feb 25',impact:'high',event:'FOMC Meeting Minutes',prior:'—',consensus:'—',trigger:'Hawkish language = USD up = short-term gold dip (buy the dip). Dovish hint = rate cut bets = real rates fall = gold rally.'},
-  {date:'Thu Feb 26',impact:'medium',event:'US GDP 2nd Estimate QoQ',prior:'+2.3%',consensus:'+2.3%',trigger:'Major downward revision = stagflation narrative = gold bullish. Upside surprise = growth resilient = less gold demand.'},
+  {date:'Tue Mar 4',impact:'medium',event:'US ISM Manufacturing PMI',prior:'50.9',consensus:'50.5',trigger:'Below 50 = growth fear = safe-haven gold bid. Above 52 = risk-on = gold dip.'},
+  {date:'Thu Mar 6',impact:'high',event:'ECB Rate Decision',prior:'2.15%',consensus:'2.00%',trigger:'Aggressive ECB cut = global easing narrative = gold bullish on real rate compression.'},
+  {date:'Thu Mar 6',impact:'medium',event:'FOMC Member Speeches',prior:'—',consensus:'—',trigger:'Hawkish tone = USD firm = short-term gold dip. Dovish = rate cut bets = real rates fall = gold rally.'},
+  {date:'Fri Mar 7',impact:'high',event:'US Nonfarm Payrolls',prior:'143K',consensus:'165K',trigger:'Major miss = recession fear = gold bid + Fed cut bets. Big beat = risk-on = gold mild weakness.'},
 ],
 geopolitical:[
   {title:'Global geopolitical uncertainty — gold primary safe-haven beneficiary',effect:'bullish',analysis:'Middle East tensions, US-China trade war escalation, Russia-Ukraine — any escalation = immediate gold bid. Gold has absorbed $300+ of geopolitical risk premium since Oct 2023. Risk-off events now consistently lifting gold 1-2% intraday.'},

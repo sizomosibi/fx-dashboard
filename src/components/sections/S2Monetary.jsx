@@ -33,6 +33,61 @@ function AIBadge({ source, generatedAt, onRefresh }) {
   );
 }
 
+// ── Market Pricing Card (OIS / rate futures consensus) ───────────────
+function MarketPricingCard({ pricing }) {
+  if (!pricing) return null;
+
+  const isThisWeek = pricing.date?.toUpperCase().includes('THIS WEEK');
+
+  return (
+    <Card label={
+      <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        NEXT MEETING — MARKET PRICING
+        {isThisWeek && (
+          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--red)', border: '1px solid rgba(208,90,74,0.4)', padding: '0.05rem 0.3rem', letterSpacing: '0.08em' }}>
+            THIS WEEK
+          </span>
+        )}
+      </span>
+    }>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.6rem' }}>
+        <div style={{ background: 'var(--paper2)', border: '1px solid var(--rule2)', padding: '0.5rem' }}>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--muted)', letterSpacing: '0.1em', marginBottom: '0.2rem' }}>DATE</div>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.82rem', color: isThisWeek ? 'var(--red)' : 'var(--ink)' }}>{pricing.date}</div>
+        </div>
+        <div style={{ background: 'var(--paper2)', border: '1px solid var(--rule2)', padding: '0.5rem' }}>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--muted)', letterSpacing: '0.1em', marginBottom: '0.2rem' }}>CONSENSUS</div>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.82rem', color: 'var(--gold2)' }}>{pricing.consensus}</div>
+        </div>
+      </div>
+      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: '#777', marginBottom: '0.4rem', lineHeight: 1.5 }}>
+        <span style={{ color: 'var(--muted)' }}>OIS MARKET PRICING: </span>{pricing.prob}
+      </div>
+      <div style={{ fontSize: '0.88rem', color: 'var(--muted)', lineHeight: 1.55 }}>
+        {pricing.note}
+      </div>
+    </Card>
+  );
+}
+
+// ── Current Account Badge ────────────────────────────────────────────
+function CurrentAccountRow({ ca }) {
+  if (!ca) return null;
+  const trendColor = ca.trend === 'improving' ? 'var(--teal)' : ca.trend === 'widening' ? 'var(--red)' : 'var(--gold2)';
+  const trendArrow = ca.trend === 'improving' ? '↑' : ca.trend === 'widening' ? '↓' : '→';
+  const caVal = parseFloat(ca.value);
+  const caColor = caVal >= 0 ? 'var(--teal)' : 'var(--red)';
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.5rem', background: 'var(--paper2)', border: '1px solid var(--rule2)', marginBottom: '0.5rem' }}>
+      <div style={{ flexShrink: 0 }}>
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.62rem', color: 'var(--muted)', letterSpacing: '0.1em', marginBottom: '0.2rem' }}>CURRENT ACCOUNT</div>
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '1.1rem', color: caColor }}>{ca.value} <span style={{ fontSize: '0.8rem', color: trendColor }}>{trendArrow} {ca.trend}</span></div>
+      </div>
+      <div style={{ fontSize: '0.84rem', color: 'var(--muted)', lineHeight: 1.5 }}>{ca.note}</div>
+    </div>
+  );
+}
+
 export function S2Monetary({ d, brief }) {
   const rateIsHike  = d.rateChange?.startsWith('+');
   const rateIsHold  = d.rateChange === '0.00%';
@@ -88,6 +143,12 @@ export function S2Monetary({ d, brief }) {
           <div className={`cb-bias-tag ${d.bias}`}>{d.bias?.toUpperCase()}</div>
         </div>
       </div>
+
+      {/* Market Pricing / OIS consensus for next meeting */}
+      <MarketPricingCard pricing={d.nextMeetingPricing} />
+
+      {/* Current Account — structural FX driver */}
+      {d.currentAccount && <CurrentAccountRow ca={d.currentAccount} />}
 
       <Card label="RECENT GUIDANCE — CB SPEECHES">
         {isAI && (

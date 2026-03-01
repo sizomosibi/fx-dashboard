@@ -29,8 +29,7 @@ export function S7Cot({ brief }) {
   const asOf   = live.cotAsOf || COT_AS_OF;
 
   // Use AI commentary for the selected currency detail if available
-  const aiDetail  = brief?.brief?.cotCommentary;
-  const staticDet = merged[cur]?.detail;
+  const aiDetail = brief?.brief?.cotCommentary;
 
   return (
     <>
@@ -62,10 +61,10 @@ export function S7Cot({ brief }) {
 
       <Card label="NET SPECULATIVE POSITIONING — G10 CURRENCIES">
         {Object.entries(merged).filter(([k]) => k !== 'XAU').map(([ccy, c]) => {
-          const bw     = Math.min(Math.abs(c.net), 100) / 2;
-          const isLong = c.net > 0;
-          const isCur  = ccy === cur;
-          const chg    = c.net - c.prev;
+          const bw      = Math.min(Math.abs(c.net), 100) / 2;
+          const isLong  = c.net > 0;
+          const isCur   = ccy === cur;
+          const chg     = c.net - c.prev;
           const hasLive = !!live.cot?.[ccy];
           return (
             <div key={ccy} className={`cot-row${isCur ? ' sel' : ''}`}>
@@ -103,7 +102,8 @@ export function S7Cot({ brief }) {
             <div className="cot-d-lbl">
               {merged[cur].label}
               <span style={{
-                fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem',
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.68rem',
                 color: merged[cur].net - merged[cur].prev > 0 ? 'var(--teal)' : 'var(--red)',
                 marginLeft: '0.75rem',
               }}>
@@ -118,7 +118,22 @@ export function S7Cot({ brief }) {
             <div style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.6, marginTop: '0.2rem' }}>
               {brief?.loading
                 ? <span style={{ opacity: 0.4 }}>Generating AI commentary…</span>
-                : aiDetail || staticDet
+                : aiDetail || (() => {
+                    const { net, prev, detail } = merged[cur];
+                    const chg     = net - prev;
+                    const dir     = chg > 0 ? 'growing' : chg < 0 ? 'declining' : 'stable';
+                    const extreme = Math.abs(net) > 60;
+                    return (
+                      <>
+                        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.72rem', color: 'var(--ink)', marginRight: '0.5rem' }}>
+                          Net {net > 0 ? 'Long' : 'Short'} {Math.abs(net)}%
+                          {' '}(prev {prev > 0 ? '+' : ''}{prev}%, {dir})
+                          {extreme && <span style={{ color: 'var(--red)', marginLeft: '0.4rem' }}>● CROWDED</span>}
+                        </span>
+                        <span>{detail}</span>
+                      </>
+                    );
+                  })()
               }
             </div>
           </div>

@@ -26,6 +26,8 @@ CURRENT DATA FOR ${cur} IN currencies.js:
   centralBank:   ${d.centralBank}
   interestRate:  ${d.interestRate}
   bias:          ${d.bias}
+  cbGroup:       ${d.cbGroup || 'unknown'}
+  score:         ${JSON.stringify(d.score || {})}
   rateChange:    ${d.rateChange}
   ratePath:      ${JSON.stringify(d.ratePath)}
   ratePathLabels:${JSON.stringify(d.ratePathLabels)}
@@ -47,6 +49,8 @@ OUTPUT FORMAT: Return ONLY valid JavaScript object properties — no explanation
 
 Update and return exactly these fields:
   bias:           (hawkish / dovish / neutral)
+  cbGroup:        (HIKING / ON HOLD / CUTTING SLOWLY / CUTTING AGGRESSIVELY — determines policy stance grouping in §1 macro dashboard)
+  score:          ({monetary:N, growth:N, inflation:N, risk:N, commodity:N} — divergence score components; monetary range -4 to +4, others -3 to +3)
   rateChange:     (e.g. '-0.25%' or '0.00%')
   ratePath:       (array of 4 rate strings, current → 18 months out, e.g. ['4.10%','3.85%','3.60%','3.35%'])
   ratePathLabels: (array of 4 date strings, e.g. ['Feb 26','May 26','Aug 26','Nov 26'])
@@ -60,7 +64,7 @@ Update and return exactly these fields:
   return {
     systemPrompt,
     userPrompt,
-    pasteTarget: `src/data/currencies.js → ${cur} object → bias, rateChange, ratePath, ratePathLabels, cbSpeeches fields`,
+    pasteTarget: `src/data/currencies.js → ${cur} object → bias, cbGroup, score, rateChange, ratePath, ratePathLabels, cbSpeeches fields`,
     hint: `Paste the full central bank press release, statement on monetary policy, or speech transcript. Include the date and speaker name if not in the text.`,
   };
 }
@@ -158,7 +162,7 @@ OUTPUT FORMAT: Return ONLY valid JavaScript object properties that need updating
 {{INPUT}}
 --- PASTE END ---
 
-You may update any combination of: bias, rateChange, ratePath, ratePathLabels, cbSpeeches, triad (inf/gro/emp), weekAhead, geopolitical, surpriseIndex, chains.
+You may update any combination of: bias, cbGroup, score, rateChange, ratePath, ratePathLabels, cbSpeeches, triad (inf/gro/emp), weekAhead, geopolitical, surpriseIndex, chains.
 
 Only include fields that materially changed. Preserve all other fields as-is.`;
 

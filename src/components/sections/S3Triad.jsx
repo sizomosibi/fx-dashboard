@@ -21,6 +21,65 @@ function IndicatorRow({ item }) {
   );
 }
 
+function SurpriseIndexBar({ index }) {
+  if (index === undefined || index === null) return null;
+
+  const capped   = Math.max(-100, Math.min(100, index));
+  const isPos    = capped >= 0;
+  const barWidth = `${Math.abs(capped) / 2}%`;   // max 50% each side → centred
+
+  const label  = capped >= 25  ? 'STRONGLY BEATING' :
+                 capped >= 5   ? 'BEATING EXPECTATIONS' :
+                 capped >= -5  ? 'IN LINE' :
+                 capped >= -25 ? 'MISSING EXPECTATIONS' :
+                                 'STRONGLY MISSING';
+
+  const colour = capped >= 5   ? 'var(--teal)' :
+                 capped >= -5  ? 'var(--gold2)' :
+                                 'var(--red)';
+
+  return (
+    <Card label="ECONOMIC SURPRISE INDEX">
+      <div style={{ fontSize: '0.88rem', color: 'var(--muted)', marginBottom: '0.5rem', lineHeight: 1.5 }}>
+        Measures whether recent data releases have beaten (+) or missed (−) market consensus.
+        Positive = CB may stay tighter longer. Negative = CB has more room to cut.
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.68rem', color: '#444', marginLeft: '0.5rem' }}>
+          Update via §11 Data Release mode.
+        </span>
+      </div>
+
+      {/* Bar */}
+      <div style={{ position: 'relative', height: '18px', background: 'var(--paper2)', border: '1px solid var(--rule2)', marginBottom: '0.4rem' }}>
+        {/* Centre line */}
+        <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1, background: 'var(--rule)', zIndex: 1 }} />
+        {/* Fill */}
+        <div style={{
+          position: 'absolute',
+          top: '2px', bottom: '2px',
+          width: barWidth,
+          left:  isPos ? '50%' : `calc(50% - ${barWidth})`,
+          background: colour,
+          borderRadius: 1,
+          transition: 'width 0.4s ease',
+        }} />
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.78rem', color: '#444' }}>−100</span>
+        <div style={{ textAlign: 'center' }}>
+          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.88rem', color: colour, fontWeight: 600 }}>
+            {capped > 0 ? '+' : ''}{capped}
+          </span>
+          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.7rem', color: colour, marginLeft: '0.5rem' }}>
+            {label}
+          </span>
+        </div>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.78rem', color: '#444' }}>+100</span>
+      </div>
+    </Card>
+  );
+}
+
 export function S3Triad({ d }) {
   const triadSrc = d.triadSrc || 'stale';
 
@@ -78,6 +137,8 @@ export function S3Triad({ d }) {
           ))}
         </Card>
       )}
+
+      <SurpriseIndexBar index={d.surpriseIndex} />
     </>
   );
 }
