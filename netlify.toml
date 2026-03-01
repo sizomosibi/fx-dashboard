@@ -18,8 +18,6 @@
 [functions."yields-proxy"]
   timeout = 20
 
-[functions."cb-rates-proxy"]
-  timeout = 20
 
 [functions."calendar-proxy"]
   timeout = 20
@@ -42,10 +40,6 @@
   to   = "/.netlify/functions/yields-proxy"
   status = 200
 
-[[redirects]]
-  from = "/api/cb-rates"
-  to   = "/.netlify/functions/cb-rates-proxy"
-  status = 200
 
 [[redirects]]
   from = "/api/calendar"

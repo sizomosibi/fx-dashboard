@@ -47,13 +47,14 @@ export async function fetchMarkets() {
   return { markets };
 }
 
-// ── CB Rates — /api/cb-rates proxy (Netlify env vars) ─────────────
-// ECB, BoC, and SNB APIs block AWS Lambda IPs. Rates are stored as
-// Netlify environment variables (RATE_EUR, RATE_CAD, RATE_CHF) and
-// returned directly — zero external HTTP calls, zero failure modes.
+// ── CB Rates — /cb-rates.json (static file, same pattern as COT) ──
+// public/cb-rates.json is committed by GitHub Actions (fetch-cb-rates.yml)
+// weekly and on every push to main. Python script scrapes global-rates.com
+// using stdlib urllib — no API keys, no env vars, no Netlify function.
+// Netlify CDN serves it at /cb-rates.json — same origin, no CORS, no Lambda.
 export async function fetchCBRates() {
-  const res = await fetch('/api/cb-rates');
-  if (!res.ok) throw new Error(`CB rates proxy HTTP ${res.status}`);
+  const res = await fetch('/cb-rates.json');
+  if (!res.ok) throw new Error(`cb-rates.json HTTP ${res.status}`);
   const { rates } = await res.json();
   if (!rates || Object.keys(rates).length === 0) throw new Error('No CB rate data');
   return { cbRates: rates };

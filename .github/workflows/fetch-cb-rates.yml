@@ -1,0 +1,43 @@
+name: Fetch CB Rates
+
+on:
+  # Weekly on Sunday at 06:00 UTC — catches any CB decisions from the prior week
+  schedule:
+    - cron: '0 6 * * 0'
+
+  # Also run on every push to main — so a fresh deploy always has current rates
+  push:
+    branches: [main]
+
+  # Run manually from GitHub Actions tab at any time
+  workflow_dispatch:
+
+jobs:
+  fetch-cb-rates:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # needed to commit cb-rates.json back to the repo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # No pip install needed — script uses stdlib only (urllib, html.parser, json)
+
+      - name: Fetch CB rates
+        run: python scripts/fetch_cb_rates.py
+
+      - name: Commit updated cb-rates.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/cb-rates.json
+          # Only commit if the file actually changed
+          git diff --cached --quiet || git commit -m "chore: update CB rates"
+          git push
