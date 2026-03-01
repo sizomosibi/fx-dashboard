@@ -9,9 +9,6 @@
 [functions]
   node_bundler = "esbuild"
 
-[functions."cot-proxy"]
-  timeout = 26
-
 [functions."market-proxy"]
   timeout = 20
 
@@ -45,11 +42,6 @@
 [[redirects]]
   from = "/api/cb-rates"
   to   = "/.netlify/functions/cb-rates-proxy"
-  status = 200
-
-[[redirects]]
-  from = "/api/cot"
-  to   = "/.netlify/functions/cot-proxy"
   status = 200
 
 [[redirects]]

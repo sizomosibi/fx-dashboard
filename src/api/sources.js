@@ -59,13 +59,14 @@ export async function fetchCBRates() {
   return { cbRates: rates };
 }
 
-// ── COT Positioning — /api/cot proxy (static file) ────────────────
-// cot-data.json is written by scripts/fetch_cot.py running in GitHub
-// Actions every Friday. The proxy reads the static file — no external
-// calls, no IP blocking. See .github/workflows/fetch-cot.yml.
+// ── COT Positioning — /cot-data.json (static file, no proxy needed) ─
+// public/cot-data.json is committed by GitHub Actions every Friday via
+// scripts/fetch_cot.py. Vite copies public/ to dist/ at build time, so
+// Netlify's CDN serves it at /cot-data.json — same origin, no CORS,
+// no Lambda. Netlify rebuilds automatically when the file is committed.
 export async function fetchCOT() {
-  const res = await fetch('/api/cot');
-  if (!res.ok) throw new Error(`COT proxy HTTP ${res.status}`);
+  const res = await fetch('/cot-data.json');
+  if (!res.ok) throw new Error(`cot-data.json HTTP ${res.status}`);
   const { cot, asOf } = await res.json();
   if (!cot || Object.keys(cot).length === 0) throw new Error('No COT data');
   return { cot, cotAsOf: asOf || null };
