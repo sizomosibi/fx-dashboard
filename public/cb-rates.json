@@ -9,6 +9,6 @@
     "CAD": "2.25%",
     "NZD": "2.25%"
   },
-  "source": "global-rates.com",
-  "fetchedAt": "2026-03-01T13:48:44.776371+00:00"
+  "source": "seed",
+  "fetchedAt": "2026-03-01T00:00:00+00:00"
 }
