@@ -71,7 +71,7 @@ function TradeCard({ cur, otherCcy, thesis }) {
   );
 }
 
-export function S8Trades({ d, brief }) {
+export function S8Trades({ d, brief, matrixEnrich }) {
   const cur     = useCurrentCcy();
   const pairs   = useTopPairs();          // static fallback pairs from scores.js
   const allCcys = Object.keys(CURRENCIES).filter(c => c !== 'XAU');
@@ -81,6 +81,11 @@ export function S8Trades({ d, brief }) {
   const aiThesis  = brief?.brief?.pairThesis;
   const isAI      = Array.isArray(aiThesis) && aiThesis.length > 0;
   const isLoading = brief?.loading;
+
+  // Matrix enrichment — AI-derived riskType + commodityExposure per currency
+  const mx        = matrixEnrich?.matrixData;   // { USD: { riskType, commodityExposure }, ... }
+  const mxLoading = matrixEnrich?.loading;
+  const mxIsAI    = !!mx;
 
   return (
     <>
@@ -108,7 +113,23 @@ export function S8Trades({ d, brief }) {
       <div className="mtx-wrap">
         <table className="mtx">
           <thead>
-            <tr><th>CCY</th><th>CB BIAS</th><th>GROWTH</th><th>INFLATION</th><th>RISK TYPE</th><th>COMMODITY</th><th>SCORE</th></tr>
+            <tr>
+              <th>CCY</th>
+              <th>CB BIAS</th>
+              <th>GROWTH</th>
+              <th>INFLATION</th>
+              <th>
+                RISK TYPE
+                {mxIsAI && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.56rem', color: 'var(--teal)', marginLeft: '0.3rem', fontWeight: 400 }}>⚡ AI</span>}
+                {mxLoading && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.56rem', color: '#555', marginLeft: '0.3rem', fontWeight: 400 }}>…</span>}
+              </th>
+              <th>
+                COMMODITY
+                {mxIsAI && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.56rem', color: 'var(--teal)', marginLeft: '0.3rem', fontWeight: 400 }}>⚡ AI</span>}
+                {mxLoading && <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.56rem', color: '#555', marginLeft: '0.3rem', fontWeight: 400 }}>…</span>}
+              </th>
+              <th>SCORE</th>
+            </tr>
           </thead>
           <tbody>
             {allCcys.map(ccy => {
@@ -120,8 +141,23 @@ export function S8Trades({ d, brief }) {
                   <td><span className={`badge ${c.bias}`}>{c.bias?.toUpperCase()}</span></td>
                   <td style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.8rem' }}>{(c.triad?.gro?.[0] || {}).v || '—'}</td>
                   <td style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.8rem' }}>{(c.triad?.inf?.[0] || {}).v || '—'}</td>
-                  <td><span className={`badge ${c.riskType === 'safe-haven' ? 'neut' : c.riskType === 'risk-on' ? 'bull' : 'bear'}`}>{c.riskType || '—'}</span></td>
-                  <td style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.8rem' }}>{c.commodityExposure || '—'}</td>
+                  <td>
+                    {mxLoading
+                      ? <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.7rem', color: '#333' }}>…</span>
+                      : (() => {
+                          const rt = mx?.[ccy]?.riskType || c.riskType;
+                          if (!rt) return <span style={{ color: '#444' }}>—</span>;
+                          const cls = rt === 'safe-haven' ? 'neut' : rt === 'risk-on' ? 'bull' : 'bear';
+                          return <span className={`badge ${cls}`}>{rt}</span>;
+                        })()
+                    }
+                  </td>
+                  <td style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.78rem', color: mx?.[ccy] ? 'var(--ink)' : 'var(--muted)' }}>
+                    {mxLoading
+                      ? <span style={{ color: '#333' }}>…</span>
+                      : (mx?.[ccy]?.commodityExposure || c.commodityExposure || '—')
+                    }
+                  </td>
                   <td style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.88rem', color: s > 2 ? 'var(--teal)' : s < -2 ? 'var(--red)' : 'var(--gold)' }}>
                     {s > 0 ? '+' : ''}{s.toFixed(1)}
                   </td>

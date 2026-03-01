@@ -23,9 +23,10 @@ import { useMarketData }   from './hooks/useMarketData.js';
 import { useFetch }        from './hooks/useFetch.js';
 import { useAIBrief }      from './hooks/useAIBrief.js';
 import { useGlobalBrief }  from './hooks/useGlobalBrief.js';
+import { useMatrixEnrich } from './hooks/useMatrixEnrich.js';
 import './styles/global.css';
 
-function FXBrief({ d, mkt, brief, globalBrief }) {
+function FXBrief({ d, mkt, brief, globalBrief, matrixEnrich }) {
   return (
     <>
       <S1Macro    mkt={mkt} globalBrief={globalBrief} />
@@ -35,7 +36,7 @@ function FXBrief({ d, mkt, brief, globalBrief }) {
       <S5Calendar d={d} />
       <S6Geo      d={d} brief={brief} globalBrief={globalBrief} />
       <S7Cot      brief={brief} />
-      <S8Trades   d={d} brief={brief} />
+      <S8Trades   d={d} brief={brief} matrixEnrich={matrixEnrich} />
       <S9AI       d={d} mkt={mkt} />
       <S10Exec />
       <S11Update />
@@ -55,12 +56,14 @@ function Brief() {
   // Global brief: app-load once, covers tariffs/wars/geo news across all currencies
   const { globalBrief, loading: globalLoading, source: globalSrc, generatedAt: globalTs, refresh: globalRefresh } = useGlobalBrief();
   const gbProp = { globalBrief, loading: globalLoading, source: globalSrc, generatedAt: globalTs, refresh: globalRefresh };
+  // Matrix enrich: AI-derived riskType + commodityExposure for all G10 currencies
+  const matrixEnrich = useMatrixEnrich();
 
   return (
     <main className="brief">
       {cur === 'XAU'
         ? <GoldBrief d={d} mkt={mkt} />
-        : <FXBrief   d={d} mkt={mkt} brief={brief} globalBrief={gbProp} />
+        : <FXBrief   d={d} mkt={mkt} brief={brief} globalBrief={gbProp} matrixEnrich={matrixEnrich} />
       }
     </main>
   );
