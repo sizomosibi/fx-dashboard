@@ -1,44 +1,43 @@
 {
   "cot": {
     "EUR": {
-      "net": 18,
-      "prev": 15
+      "net": 15,
+      "prev": 17
     },
     "JPY": {
-      "net": -22,
-      "prev": -25
+      "net": -4,
+      "prev": 3
     },
     "GBP": {
-      "net": 12,
-      "prev": 10
+      "net": -27,
+      "prev": -23
     },
     "CHF": {
-      "net": -8,
-      "prev": -6
+      "net": -39,
+      "prev": -43
     },
     "CAD": {
-      "net": -31,
-      "prev": -28
+      "net": 9,
+      "prev": 12
     },
     "AUD": {
-      "net": -19,
-      "prev": -22
+      "net": 25,
+      "prev": 21
     },
     "NZD": {
-      "net": -24,
-      "prev": -21
+      "net": -43,
+      "prev": -41
     },
     "USD": {
-      "net": 28,
-      "prev": 31
+      "net": -17,
+      "prev": -7
     },
     "XAU": {
-      "net": 62,
-      "prev": 58
+      "net": 39,
+      "prev": 38
     }
   },
-  "asOf": "2026-02-18",
-  "fetchedAt": "2026-02-18T21:30:00Z",
-  "source": "CFTC Socrata via GitHub Actions",
-  "_note": "Seed data \u2014 will be replaced by scheduled GitHub Actions run every Friday"
+  "asOf": "2026-03-03T00:00:00.000",
+  "fetchedAt": "2026-03-06T21:53:48.665677+00:00",
+  "source": "CFTC Socrata via GitHub Actions"
 }
