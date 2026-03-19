@@ -4,10 +4,10 @@
 export const CURRENCIES = {
 AUD:{name:'AUD',full:'Australian Dollar',flag:'🇦🇺',country:'Australia',
 centralBank:'Reserve Bank of Australia (RBA)',interestRate:'3.85%',
-ratePath:['3.60%','3.85%','4.10%','3.85%'],ratePathLabels:['Aug 25','Feb 26','May 26','Dec 26'],
+ratePath:["4.10%","4.10%","3.85%","3.60%"],ratePathLabels:["Mar 18","Jun 26","Sep 26","Dec 26"],
 rateChange:'+0.25%',bias:'hawkish',
 cbGroup:'HIKING',
-score:{monetary:3,growth:-1,inflation:2,risk:-1,commodity:-1},
+score:{"monetary":3,"growth":1,"inflation":2,"risk":-2,"commodity":-1},
 currentAccount:{value:'-1.2%',trend:'improving',note:'Chronic CA deficit narrowing as commodity export revenues rise. Not a primary AUD driver currently.'},
 nextMeetingPricing:{date:'Mar 17-18, 2026',consensus:'Hold at 3.85%',prob:'Hold 80%, Hike May 60% if Q1 CPI >3%',note:'All 4 major banks expect March hold. May meeting is live — Q1 CPI (late April) is the key data point.'},
 triad:{
@@ -15,9 +15,9 @@ triad:{
   gro:[{n:'GDP YoY',v:'0.8%',c:'+0.2%',d:'up'},{n:'Private Demand QoQ',v:'+1.2%',c:'+0.8%',d:'up'},{n:'PMI Composite',v:'50.2',c:'+0.4',d:'up'}],
   emp:[{n:'Unemployment',v:'4.0%',c:'+0.1%',d:'up'},{n:'Participation',v:'66.8%',c:'0.0%',d:'flat'},{n:'Wage Growth YoY',v:'3.2%',c:'-0.1%',d:'down'}],
 },
-cbSpeeches:[{speaker:'Gov. Michele Bullock',date:'Feb 3, 2026',
-  text:'The Board decided to increase the cash rate target to 3.85%. Inflation picked up materially in H2 2025. Growth in private demand has strengthened substantially more than expected and capacity pressures have increased.',
-  implication:'RBA has HIKED — first hike since Nov 2023. Inflation above 2-3% target. May meeting live for second hike if Q1 CPI stays above 3%. AUD now supported by rate differential widening vs EUR/NZD/CAD. Hawkish bias is structural until inflation returns to target.'}],
+cbSpeeches:[{speaker:"Gov. Michele Bullock","date":"Mar 18, 2026",
+  text:"The Board judged that inflation is likely to remain above target for some time and that the risks have tilted further to the upside, including to inflation expectations. Five members voted to increase the cash rate target by 25 basis points to 4.10 per cent; four members voted to leave the cash rate target unchanged.",
+  implication:"RBA delivers second consecutive hike to 4.10%, but the narrow 5-4 vote signals a fractured board and limits conviction in further tightening. Middle East-driven fuel price shock and sticky domestic capacity pressures keep the bias hawkish, but dovish dissent makes Jun 26 a hold more likely than a third hike. AUD supported near-term by widening rate differential vs EUR/CAD/NZD, but the divided board caps upside — watch Q1 CPI as the swing factor for whether the hiking cycle extends or peaks here."}],
 partners:[
   {flag:'🇨🇳',name:'China',share:'31%',commodity:'Iron Ore, Coal, LNG',impact:'negative',note:'Manufacturing slowdown reducing commodity demand — primary AUD headwind'},
   {flag:'🇯🇵',name:'Japan',share:'12%',commodity:'Coal, LNG, Beef',impact:'neutral',note:'Stable demand; JPY weakness complicates pricing'},
