@@ -5,15 +5,15 @@
       "vol": "medium"
     },
     "GBP/USD": {
-      "atr": 120,
+      "atr": 111,
       "vol": "high"
     },
     "USD/JPY": {
-      "atr": 116,
+      "atr": 94,
       "vol": "high"
     },
     "USD/CHF": {
-      "atr": 69,
+      "atr": 64,
       "vol": "medium"
     },
     "USD/CAD": {
@@ -21,18 +21,18 @@
       "vol": "medium"
     },
     "AUD/USD": {
-      "atr": 76,
+      "atr": 69,
       "vol": "medium"
     },
     "NZD/USD": {
-      "atr": 60,
+      "atr": 55,
       "vol": "medium"
     },
     "GBP/JPY": {
-      "atr": 124,
+      "atr": 137,
       "vol": "high"
     }
   },
-  "fetchedAt": "2026-04-04T07:32:31.415330+00:00",
+  "fetchedAt": "2026-04-11T07:32:22.679243+00:00",
   "fallbackUsed": []
 }
