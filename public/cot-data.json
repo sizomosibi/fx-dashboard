@@ -1,43 +1,43 @@
 {
   "cot": {
     "EUR": {
-      "net": 3,
-      "prev": -1
+      "net": 5,
+      "prev": 3
     },
     "JPY": {
-      "net": -23,
-      "prev": -27
+      "net": -27,
+      "prev": -23
     },
     "GBP": {
-      "net": -22,
-      "prev": -23
+      "net": -20,
+      "prev": -22
     },
     "CHF": {
-      "net": -37,
-      "prev": -35
+      "net": -36,
+      "prev": -37
     },
     "CAD": {
-      "net": -30,
-      "prev": -23
+      "net": -23,
+      "prev": -30
     },
     "AUD": {
-      "net": 25,
-      "prev": 27
+      "net": 24,
+      "prev": 25
     },
     "NZD": {
-      "net": -52,
-      "prev": -47
+      "net": -59,
+      "prev": -52
     },
     "USD": {
       "net": 16,
-      "prev": 15
+      "prev": 16
     },
     "XAU": {
       "net": 45,
-      "prev": 44
+      "prev": 45
     }
   },
-  "asOf": "2026-04-14T00:00:00.000",
-  "fetchedAt": "2026-04-17T22:08:04.284141+00:00",
+  "asOf": "2026-04-21T00:00:00.000",
+  "fetchedAt": "2026-04-24T22:11:12.498884+00:00",
   "source": "CFTC Socrata via GitHub Actions"
 }
